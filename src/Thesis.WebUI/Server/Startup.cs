@@ -10,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Presistance;
-using Thesis.WebUI.Server.Data;
 using Thesis.WebUI.Server.Models;
 
 namespace Thesis.WebUI.Server
@@ -30,7 +29,7 @@ namespace Thesis.WebUI.Server
         {
             var cs = Configuration.GetConnectionString("DefaultConnection");
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
