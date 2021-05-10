@@ -10,7 +10,4 @@ namespace Thesis.Infrastructure.Identity
     public class AppUser : IdentityUser<int>
     {
     }
-    public class AppRole : IdentityRole<int>
-    {
-    }
 }
