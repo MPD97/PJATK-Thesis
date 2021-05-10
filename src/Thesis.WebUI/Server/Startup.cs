@@ -10,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Presistance;
-using Thesis.WebUI.Server.Models;
 
 namespace Thesis.WebUI.Server
 {
