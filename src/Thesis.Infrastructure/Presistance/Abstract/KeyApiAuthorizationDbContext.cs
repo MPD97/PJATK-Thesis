@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 
-namespace Thesis.Infrastructure.Presistance
+namespace Thesis.Infrastructure.Presistance.Abstract
 {
     /// <summary>
     /// Database abstraction for a combined <see cref="DbContext"/> using ASP.NET Identity and Identity Server.
