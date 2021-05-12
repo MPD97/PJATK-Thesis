@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using Thesis.Domain.Commons;
 using Thesis.Domain.Exceptions;
 
 namespace Thesis.Domain.Entities
 {
-    public class Point
+    public class Point : BaseEntity
     {
         private decimal latitude;
         private decimal longitude;
