@@ -17,6 +17,15 @@ namespace Thesis.WebUI.Server.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string UserId => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        public int? UserId()
+        {
+            var strId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if(!int.TryParse(strId, out int id))
+            {
+                return null;
+            }
+            return id;
+        }
     }
 }

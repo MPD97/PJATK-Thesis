@@ -9,8 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
+using Thesis.Application.Common.Interfaces;
 using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Presistance;
+using Thesis.Infrastructure.Services;
+using Thesis.WebUI.Server.Services;
 
 namespace Thesis.WebUI.Server
 {
@@ -35,6 +38,10 @@ namespace Thesis.WebUI.Server
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
+            services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
+            services.AddHttpContextAccessor();
+
             services.AddDefaultIdentity<AppUser>(options => { 
                 options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedAccount = false;
@@ -56,7 +63,6 @@ namespace Thesis.WebUI.Server
 
             services.AddScoped<ITransaction, Transaction>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
 
             services.AddControllersWithViews();
             services.AddRazorPages();
