@@ -5,6 +5,6 @@ namespace Thesis.Application.Common.Interfaces
 {
     public interface ICurrentUserService
     {
-        int? UserId { get; }
+        string UserId { get; }
     }
 }
