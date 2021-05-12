@@ -54,6 +54,10 @@ namespace Thesis.WebUI.Server
             services.AddAuthentication()
                 .AddIdentityServerJwt();
 
+            services.AddScoped<ITransaction, Transaction>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
