@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Thesis.Application\Thesis.Application.csproj" />
     <ProjectReference Include="..\Thesis.Domain\Thesis.Domain.csproj" />
   </ItemGroup>
 
