@@ -11,7 +11,9 @@ namespace Thesis.Domain.Entities
         public int UserId { get; set; }
 
         public RunStatus Status { get; set; }
-        public TimeSpan Time { get; set; }
+
+        public DateTime StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
 
         public virtual Route Route { get; set; }
         public virtual IList<CompletedPoints> CompletedPoints { get; set; }

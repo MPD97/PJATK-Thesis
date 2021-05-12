@@ -29,4 +29,5 @@ namespace Thesis.Infrastructure.Presistance.Congiurations
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
+
 }
