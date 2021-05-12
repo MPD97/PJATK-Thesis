@@ -1,32 +1,31 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Thesis.Domain.Entities;
-using Thesis.Infrastructure.Identity;
 
 namespace Thesis.Infrastructure.Presistance.Congiurations
 {
-    public class UserConfiguration : IEntityTypeConfiguration<AppUser>
+    public class RouteConfiguration : IEntityTypeConfiguration<Route>
     {
-        public void Configure(EntityTypeBuilder<AppUser> builder)
+        public void Configure(EntityTypeBuilder<Route> builder)
         {
-            builder.HasMany(u => u.CreatedRoutes)
-                .WithOne()
-                .HasForeignKey(r => r.CreatedBy)
+            builder.HasKey(r => r.Id);
+
+            builder.Property(r => r.Name)
+                .HasMaxLength(Route.NAME_MAX_LENGTH)
+                .IsRequired();
+
+            builder.Property(r => r.Description)
+                .HasMaxLength(Route.DESCRIPTION_MAX_LENGTH)
+                .IsRequired(false);
+
+            builder.HasMany(r => r.Points)
+                .WithOne(p => p.Route)
+                .HasForeignKey(p => p.RouteId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(u => u.ModifiedRoutes)
-                .WithOne()
-                .HasForeignKey(r => r.LastModifiedBy)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasMany(u => u.Runs)
-                .WithOne()
-                .HasForeignKey(r => r.UserId)
+            builder.HasMany(r => r.Runs)
+                .WithOne(r => r.Route)
+                .HasForeignKey(r => r.RouteId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
