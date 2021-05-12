@@ -19,7 +19,7 @@ namespace Thesis.Infrastructure.Presistance.Congiurations
             builder.HasMany(p => p.CompletedPoints)
                 .WithOne(cp => cp.Point)
                 .HasForeignKey(cp => cp.PointId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
