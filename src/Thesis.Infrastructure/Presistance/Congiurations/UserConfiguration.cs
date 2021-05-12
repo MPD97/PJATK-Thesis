@@ -16,12 +16,12 @@ namespace Thesis.Infrastructure.Presistance.Congiurations
             builder.HasMany(u => u.CreatedRoutes)
                 .WithOne()
                 .HasForeignKey(r => r.CreatedBy)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(u => u.ModifiedRoutes)
                 .WithOne()
                 .HasForeignKey(r => r.LastModifiedBy)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(u => u.Runs)
                 .WithOne()

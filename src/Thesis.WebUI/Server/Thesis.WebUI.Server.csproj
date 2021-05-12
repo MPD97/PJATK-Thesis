@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Thesis.Application\Thesis.Application.csproj" />
     <ProjectReference Include="..\..\Thesis.Infrastructure\Thesis.Infrastructure.csproj" />
     <ProjectReference Include="..\Client\Thesis.WebUI.Client.csproj" />
     <ProjectReference Include="..\Shared\Thesis.WebUI.Shared.csproj" />
