@@ -22,6 +22,8 @@ namespace Thesis.Infrastructure.Presistance
 
             modelBuilder.Entity<AppUser>(entity => { entity.ToTable(name: "User"); });
             modelBuilder.Entity<AppRole>(entity => { entity.ToTable(name: "Role"); });
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
     }
 }
