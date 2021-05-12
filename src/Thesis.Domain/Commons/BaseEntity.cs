@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Thesis.Domain.Entities.Abstract
+namespace Thesis.Domain.Commons
 {
     public abstract class BaseEntity
     {

@@ -1,4 +1,6 @@
-﻿namespace Thesis.Domain.Entities
+﻿using Thesis.Domain.Commons;
+
+namespace Thesis.Domain.Entities
 {
     public class CompletedPoints : BaseEntity
     {

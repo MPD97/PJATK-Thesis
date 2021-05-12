@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Thesis.Domain.Entities.Abstract;
+using Thesis.Domain.Commons;
 
 namespace Thesis.Application.Common.Interfaces
 {
