@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Thesis.Domain.Commons;
 using Thesis.Domain.Enums;
 
 namespace Thesis.Domain.Entities
 {
-    public class Run
+    public class Run : BaseEntity
     {
         public int Id { get; set; }
         public int RouteId { get; set; }
