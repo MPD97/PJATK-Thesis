@@ -1,6 +1,6 @@
 ﻿namespace Thesis.Domain.Entities
 {
-    public class CompletedPoints
+    public class CompletedPoints : BaseEntity
     {
         public int Id { get; set; }
         public int PointId { get; set; }
