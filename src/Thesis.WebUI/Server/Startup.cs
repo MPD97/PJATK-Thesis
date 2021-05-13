@@ -7,9 +7,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.Linq;
-using Thesis.WebUI.Server.Data;
-using Thesis.WebUI.Server.Models;
+using Thesis.Application;
+using Thesis.Application.Common.Interfaces;
+using Thesis.Infrastructure.Identity;
+using Thesis.Infrastructure.Presistance;
+using Thesis.Infrastructure.Services;
+using Thesis.WebUI.Server.Services;
 
 namespace Thesis.WebUI.Server
 {
@@ -26,22 +31,41 @@ namespace Thesis.WebUI.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplication();
+
             var cs = Configuration.GetConnectionString("DefaultConnection");
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
+            services.AddHttpContextAccessor();
+
+            services.AddDefaultIdentity<AppUser>(options => { 
+                options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedAccount = false;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+            })
+                .AddRoles<AppRole>()
+                .AddEntityFrameworkStores<AppDbContext>();
 
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+                .AddApiAuthorization<AppUser, AppDbContext>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
+            
+            services.AddScoped<ITransaction, Transaction>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             services.AddControllersWithViews();
             services.AddRazorPages();
