@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
+using Thesis.Application;
 using Thesis.Application.Common.Interfaces;
 using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Presistance;
@@ -30,6 +31,8 @@ namespace Thesis.WebUI.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplication();
+
             var cs = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<AppDbContext>(options =>
@@ -60,7 +63,7 @@ namespace Thesis.WebUI.Server
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
-
+            
             services.AddScoped<ITransaction, Transaction>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
