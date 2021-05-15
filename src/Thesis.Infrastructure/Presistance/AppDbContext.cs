@@ -16,14 +16,14 @@ namespace Thesis.Infrastructure.Presistance
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
-        //    modelBuilder.Entity<AppUser>(entity => { entity.ToTable(name: "User"); });
-        //    modelBuilder.Entity<AppRole>(entity => { entity.ToTable(name: "Role"); });
+            modelBuilder.Entity<AppUser>(entity => { entity.ToTable(name: "User"); });
+            modelBuilder.Entity<AppRole>(entity => { entity.ToTable(name: "Role"); });
 
-        //    modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
-        //}
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        }
     }
 }
