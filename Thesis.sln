@@ -15,11 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thesis.Application", "src\T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thesis.Infrastructure", "src\Thesis.Infrastructure\Thesis.Infrastructure.csproj", "{59B46EC3-0ABA-4046-939B-8BAF98DA4BC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thesis.WebUI.Server", "src\Thesis.WebUI\Server\Thesis.WebUI.Server.csproj", "{5FFE51C3-8DC4-4BE3-B459-B6F8296823D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thesis.WebUI.Server", "src\Thesis.WebUI\Server\Thesis.WebUI.Server.csproj", "{5FFE51C3-8DC4-4BE3-B459-B6F8296823D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thesis.WebUI.Client", "src\Thesis.WebUI\Client\Thesis.WebUI.Client.csproj", "{3EC138C6-5A44-4C21-B8FD-3AEDB56B84A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thesis.WebUI.Client", "src\Thesis.WebUI\Client\Thesis.WebUI.Client.csproj", "{3EC138C6-5A44-4C21-B8FD-3AEDB56B84A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thesis.WebUI.Shared", "src\Thesis.WebUI\Shared\Thesis.WebUI.Shared.csproj", "{65C42A6F-FB2B-4572-B934-FD6E3CFFB847}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thesis.WebUI.Shared", "src\Thesis.WebUI\Shared\Thesis.WebUI.Shared.csproj", "{65C42A6F-FB2B-4572-B934-FD6E3CFFB847}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

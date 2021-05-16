@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Thesis.Application.Common.Behaviours;
-
+using Thesis.Application.Common.Configurations;
+using Thesis.Application.Common.Extensions;
 namespace Thesis.Application
 {
     public static class DependencyInjectionExtension
@@ -24,6 +26,12 @@ namespace Thesis.Application
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+
+            return services;
+        }
+        public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
+        {
+            var mockOptions = OptionRegisterExtension.RegisterExtensionOptions<MapConfiguration>(services, configuration, "Map");
 
             return services;
         }
