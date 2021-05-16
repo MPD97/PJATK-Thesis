@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Thesis.Application.Common.Configurations
 {
-    class MapConfiguration
+    public class MapConfiguration
     {
     }
 }
