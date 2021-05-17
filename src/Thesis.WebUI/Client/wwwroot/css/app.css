@@ -8,6 +8,16 @@ a, .btn-link {
     color: #0366d6;
 }
 
+.page {
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    margin: auto;
+    position: absolute !important;
+}
+
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;
