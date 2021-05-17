@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Thesis.Infrastructure.Presistance;
 
 namespace Thesis.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210517090218_Route_Length_In_Meters")]
+    partial class Route_Length_In_Meters
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -322,9 +324,6 @@ namespace Thesis.Infrastructure.Migrations
                     b.HasIndex("CreatedBy");
 
                     b.HasIndex("LastModifiedBy");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("Route");
                 });

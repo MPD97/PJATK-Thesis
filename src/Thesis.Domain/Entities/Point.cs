@@ -40,12 +40,27 @@ namespace Thesis.Domain.Entities
         public byte Order { get; set; }
         public byte Radius { get; set; }
         public virtual Route Route { get; set; }
-        public virtual IList<CompletedPoints> CompletedPoints { get; set; }
+        public virtual IList<CompletedPoints> CompletedPoints { get; set; } = new List<CompletedPoints>();
 
         public static readonly decimal LATITUDE_MIN_VALUE = -90M;
         public static readonly decimal LATITUDE_MAX_VALUE = 90M;
 
         public static readonly decimal LONGITUDE_MIN_VALUE = -180M;
         public static readonly decimal LONGITUDE_MAX_VALUE = 180M;
+
+        public Point()
+        {
+
+        }
+
+        public Point(decimal latitude, decimal longitude, byte order, byte radius)
+        {
+            Latitude = latitude;
+            Longitude = longitude;
+            Order = order;
+            Radius = radius;
+        }
+
+
     }
 }
