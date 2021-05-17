@@ -67,11 +67,18 @@ namespace Thesis.Domain.Entities
 
         }
 
-        public Route(string name, string description, RouteDifficulty difficulty)
+        public Route(string name, string description, RouteDifficulty difficulty, int userId)
         {
             Name = name;
             Description = description;
             Difficulty = difficulty;
+
+            Create(userId);
+        }
+        private void Create(int userId)
+        {
+            Created = DateTime.UtcNow;
+            CreatedBy = userId;
         }
 
         public void AddPoint(decimal latitude, decimal longitude, byte radius)
@@ -91,6 +98,6 @@ namespace Thesis.Domain.Entities
                 LengthKm += (int)CoordinatesHelper.DistanceBetweenPlaces((double)Points[^2].Latitude, (double)Points[^2].Longitude, (double)Points[^1].Latitude, (double)Points[^1].Longitude);
             }
         }
-
+        public void 
     }
 }
