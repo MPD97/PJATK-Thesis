@@ -37,15 +37,15 @@ namespace Thesis.Domain.Entities
         }
         public string Description { get; protected set; }
         public RouteDifficulty Difficulty { get; protected set; }
-        public int LengthKm
+        public int LengthInMeters
         {
-            get => lengthKm; set
+            get => lengthInMeters; set
             {
                 if (value < 1)
                 {
-                    throw new DomainLayerException($"Property {nameof(Route)}.{nameof(LengthKm)} cannot be less than 1.");
+                    throw new DomainLayerException($"Property {nameof(Route)}.{nameof(LengthInMeters)} cannot be less than 1.");
                 }
-                lengthKm = value;
+                lengthInMeters = value;
             }
         }
         public RouteStatus Status { get; protected set; } = RouteStatus.New;
@@ -57,7 +57,7 @@ namespace Thesis.Domain.Entities
 
         public static readonly int DESCRIPTION_MAX_LENGTH = 500;
         private string name;
-        private int lengthKm;
+        private int lengthInMeters;
 
 
         public Route()
@@ -89,7 +89,7 @@ namespace Thesis.Domain.Entities
 
             if (Points.Count > 1)
             {
-                LengthKm += (int)CoordinatesHelper.DistanceBetweenPlaces((double)Points[^2].Latitude, (double)Points[^2].Longitude, (double)Points[^1].Latitude, (double)Points[^1].Longitude);
+                LengthInMeters += (int)CoordinatesHelper.DistanceBetweenPlaces((double)Points[^2].Latitude, (double)Points[^2].Longitude, (double)Points[^1].Latitude, (double)Points[^1].Longitude);
             }
         }
         public void ChangeDifficulty(RouteDifficulty difficulty, int userId)

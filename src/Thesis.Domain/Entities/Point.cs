@@ -60,5 +60,7 @@ namespace Thesis.Domain.Entities
             Order = order;
             Radius = radius;
         }
+
+
     }
 }
