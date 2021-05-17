@@ -14,14 +14,14 @@ namespace Thesis.Infrastructure.Services
 {
     public class DataSeederService : IDataSeederService
     {
-        private readonly AppDbContext _context;
+        private readonly IRepository<Route> _routeRepository;
         private readonly UserManager<AppUser> _userManager;
 
         private AppUser _testUser = new AppUser("test@test.pl");
 
-        public DataSeederService(AppDbContext context, UserManager<AppUser> userManager)
+        public DataSeederService(IRepository<Route> routeRepository, UserManager<AppUser> userManager)
         {
-            _context = context;
+            _routeRepository = routeRepository;
             _userManager = userManager;
         }
 
@@ -32,6 +32,7 @@ namespace Thesis.Infrastructure.Services
             {
                 throw new Exception($"Test user not exist. Run {nameof(CreateTestUser)} method first.");
             }
+
             var route = new Route("Trasa testowa", "Opis trasy testowej", RouteDifficulty.Green, existingUser.Id);
             route.AddPoint(52.183145708512654M, 21.432822680367927M, 10);
             route.AddPoint(52.183057202090545M, 21.436503590733746M, 10);
@@ -39,6 +40,11 @@ namespace Thesis.Infrastructure.Services
             route.AddPoint(52.1823712713466M, 21.44213321835206M, 10);
             route.AddPoint(52.182592540484485M, 21.445381080439542M, 10);
             route.AddPoint(52.18341122672211M, 21.45151593104924M, 10);
+
+            route.ChangeStatus(RouteStatus.Accepted, existingUser.Id);
+
+            await _routeRepository.AddAsync(route);
+            await _routeRepository.SaveChangesAsync();
 
         }
 
