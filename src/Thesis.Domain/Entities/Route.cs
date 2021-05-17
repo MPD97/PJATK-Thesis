@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,8 +48,8 @@ namespace Thesis.Domain.Entities
             }
         }
         public RouteStatus Status { get; set; }
-        public virtual IList<Point> Points { get; set; }
-        public virtual IList<Run> Runs { get; set; }
+        public virtual IList<Point> Points { get; set; } = new List<Point>();
+        public virtual IList<Run> Runs { get; set; } = new List<Run>();
 
         public static readonly int NAME_MAX_LENGTH = 40;
         public static readonly int NAME_MIN_LENGTH = 4;
@@ -62,12 +63,26 @@ namespace Thesis.Domain.Entities
         {
 
         }
+
         public Route(string name, string description, RouteDifficulty difficulty, IList<Point> points)
         {
             Name = name;
             Description = description;
             Difficulty = difficulty;
             Points = points;
+        }
+
+        public void AddPoint(decimal latitude, decimal longitude, byte radius)
+        {
+            var order = (Points.Count + 1);
+            if (order == byte.MaxValue)
+            {
+                throw new Exception("Exceeded max number of points!");
+            }
+
+            var point = new Point(latitude, longitude, (byte)order, radius);
+            
+            Points.Add(point);
         }
     }
 }
