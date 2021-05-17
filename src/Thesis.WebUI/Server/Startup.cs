@@ -11,6 +11,7 @@ using System;
 using System.Linq;
 using Thesis.Application;
 using Thesis.Application.Common.Interfaces;
+using Thesis.Infrastructure;
 using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Presistance;
 using Thesis.Infrastructure.Services;
@@ -65,9 +66,8 @@ namespace Thesis.WebUI.Server
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
-            
-            services.AddScoped<ITransaction, Transaction>();
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            services.AddInfrastructure();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

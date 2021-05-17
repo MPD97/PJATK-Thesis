@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using Thesis.Application.Common.Behaviours;
 using Thesis.Application.Common.Configurations;
 using Thesis.Application.Common.Extensions;
+using Thesis.Application.Common.Interfaces;
+
 namespace Thesis.Application
 {
     public static class DependencyInjectionExtension
