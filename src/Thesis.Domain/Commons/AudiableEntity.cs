@@ -15,5 +15,17 @@ namespace Thesis.Domain.Commons
         public DateTime? LastModified { get; set; }
 
         public int LastModifiedBy { get; set; }
+
+        private void Create(int userId)
+        {
+            Created = DateTime.UtcNow;
+            CreatedBy = userId;
+        }
+
+        private void Update(int userId)
+        {
+            LastModified = DateTime.UtcNow;
+            LastModifiedBy = userId;
+        }
     }
 }
