@@ -16,13 +16,13 @@ namespace Thesis.Domain.Commons
 
         public int LastModifiedBy { get; set; }
 
-        private void Create(int userId)
+        protected void Create(int userId)
         {
             Created = DateTime.UtcNow;
             CreatedBy = userId;
         }
 
-        private void Update(int userId)
+        protected void Update(int userId)
         {
             LastModified = DateTime.UtcNow;
             LastModifiedBy = userId;
