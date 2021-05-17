@@ -32,7 +32,6 @@ namespace Thesis.Infrastructure.Services
             route.AddPoint(52.1823712713466M, 21.44213321835206M, 10);
             route.AddPoint(52.182592540484485M, 21.445381080439542M, 10);
             route.AddPoint(52.18341122672211M, 21.45151593104924M, 10);
-
         }
 
         public async Task CreateTestUser()
