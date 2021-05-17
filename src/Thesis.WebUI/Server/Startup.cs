@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Thesis.Application;
 using Thesis.Application.Common.Interfaces;
 using Thesis.Infrastructure;
@@ -48,7 +49,8 @@ namespace Thesis.WebUI.Server
 
             services.AddHttpContextAccessor();
 
-            services.AddDefaultIdentity<AppUser>(options => { 
+            services.AddDefaultIdentity<AppUser>(options =>
+            {
                 options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedAccount = false;
                 options.Password.RequireDigit = true;
@@ -74,7 +76,7 @@ namespace Thesis.WebUI.Server
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDataSeederService dataSeeder, AppDbContext context)
         {
             if (env.IsDevelopment())
             {
@@ -88,6 +90,10 @@ namespace Thesis.WebUI.Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            context.Database.EnsureCreated();
+
+            dataSeeder.CreateTestUser().Wait();
+            dataSeeder.CreateTestRoute().Wait();
 
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
