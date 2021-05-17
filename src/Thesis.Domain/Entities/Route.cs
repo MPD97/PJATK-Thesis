@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Thesis.Domain.Commons;
 using Thesis.Domain.Enums;
 using Thesis.Domain.Exceptions;
+using Thesis.Domain.Static;
 
 namespace Thesis.Domain.Entities
 {
@@ -59,6 +60,8 @@ namespace Thesis.Domain.Entities
         private int lengthKm;
 
 
+
+
         public Route()
         {
 
@@ -80,8 +83,14 @@ namespace Thesis.Domain.Entities
             }
 
             var point = new Point(latitude, longitude, (byte)order, radius);
-            
+
             Points.Add(point);
+
+            if (Points.Count > 1)
+            {
+                LengthKm += (int)CoordinatesHelper.DistanceBetweenPlaces((double)Points[^2].Latitude, (double)Points[^2].Longitude, (double)Points[^1].Latitude, (double)Points[^1].Longitude);
+            }
         }
+
     }
 }
