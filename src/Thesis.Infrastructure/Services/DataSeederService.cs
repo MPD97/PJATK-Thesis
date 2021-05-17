@@ -23,7 +23,10 @@ namespace Thesis.Infrastructure.Services
 
         public Task CreateTestRoute()
         {
-            throw new NotImplementedException();
+            var testUser = new AppUser()
+            {
+
+            }
         }
 
         public Task CreateTestUser()
