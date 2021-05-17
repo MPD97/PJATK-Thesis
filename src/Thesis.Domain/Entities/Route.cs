@@ -60,8 +60,6 @@ namespace Thesis.Domain.Entities
         private int lengthKm;
 
 
-
-
         public Route()
         {
 
@@ -102,6 +100,18 @@ namespace Thesis.Domain.Entities
             }
 
             Difficulty = difficulty;
+
+            Update(userId);
+        }
+
+        public void ChangeStatus(RouteStatus status, int userId)
+        {
+            if (Status == status)
+            {
+                throw new Exception("Cannot change status to same status");
+            }
+
+            Status = status;
 
             Update(userId);
         }
