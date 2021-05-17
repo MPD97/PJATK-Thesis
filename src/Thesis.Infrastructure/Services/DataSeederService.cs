@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Thesis.Application.Common.Interfaces;
 using Thesis.Domain.Entities;
+using Thesis.Domain.Enums;
 using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Presistance;
 
