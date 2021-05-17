@@ -12,10 +12,10 @@ namespace Thesis.Domain.Entities
 {
     public class Route : AuditableEntity
     {
-        public int Id { get; set; }
+        public int Id { get; protected set; }
         public string Name
         {
-            get => name; set
+            get => name; protected set
             {
 
                 if (value == null)
@@ -35,7 +35,7 @@ namespace Thesis.Domain.Entities
                 name = value;
             }
         }
-        public string Description { get; set; }
+        public string Description { get; protected set; }
         public RouteDifficulty Difficulty { get; protected set; }
         public int LengthKm
         {
@@ -94,6 +94,16 @@ namespace Thesis.Domain.Entities
                 LengthKm += (int)CoordinatesHelper.DistanceBetweenPlaces((double)Points[^2].Latitude, (double)Points[^2].Longitude, (double)Points[^1].Latitude, (double)Points[^1].Longitude);
             }
         }
-        public void 
+        public void ChangeDifficulty(RouteDifficulty difficulty, int userId)
+        {
+            if (Difficulty == difficulty)
+            {
+                throw new Exception("Cannot change difficulty to same difficulty");
+            }
+
+            Difficulty = difficulty;
+
+            Update(userId);
+        }
     }
 }
