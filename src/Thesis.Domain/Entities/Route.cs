@@ -36,7 +36,7 @@ namespace Thesis.Domain.Entities
             }
         }
         public string Description { get; set; }
-        public RouteDifficulty Difficulty { get; set; }
+        public RouteDifficulty Difficulty { get; protected set; }
         public int LengthKm
         {
             get => lengthKm; set
@@ -48,9 +48,9 @@ namespace Thesis.Domain.Entities
                 lengthKm = value;
             }
         }
-        public RouteStatus Status { get; set; }
-        public virtual IList<Point> Points { get; set; } = new List<Point>();
-        public virtual IList<Run> Runs { get; set; } = new List<Run>();
+        public RouteStatus Status { get; protected set; }
+        public virtual IList<Point> Points { get; protected set; } = new List<Point>();
+        public virtual IList<Run> Runs { get; protected set; } = new List<Run>();
 
         public static readonly int NAME_MAX_LENGTH = 40;
         public static readonly int NAME_MIN_LENGTH = 4;
@@ -75,11 +75,7 @@ namespace Thesis.Domain.Entities
 
             Create(userId);
         }
-        private void Create(int userId)
-        {
-            Created = DateTime.UtcNow;
-            CreatedBy = userId;
-        }
+
 
         public void AddPoint(decimal latitude, decimal longitude, byte radius)
         {
