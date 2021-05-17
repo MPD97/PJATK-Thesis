@@ -64,12 +64,11 @@ namespace Thesis.Domain.Entities
 
         }
 
-        public Route(string name, string description, RouteDifficulty difficulty, IList<Point> points)
+        public Route(string name, string description, RouteDifficulty difficulty)
         {
             Name = name;
             Description = description;
             Difficulty = difficulty;
-            Points = points;
         }
 
         public void AddPoint(decimal latitude, decimal longitude, byte radius)
