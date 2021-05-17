@@ -91,6 +91,7 @@ namespace Thesis.WebUI.Server
                 app.UseHsts();
             }
             context.Database.EnsureCreated();
+            context.Database.Migrate();
 
             dataSeeder.CreateTestUser().Wait();
             dataSeeder.CreateTestRoute().Wait();
