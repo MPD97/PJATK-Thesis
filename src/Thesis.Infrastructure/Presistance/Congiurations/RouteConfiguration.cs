@@ -14,6 +14,9 @@ namespace Thesis.Infrastructure.Presistance.Congiurations
                 .HasMaxLength(Route.NAME_MAX_LENGTH)
                 .IsRequired();
 
+            builder.HasIndex(r => r.Name)
+                .IsUnique();
+
             builder.Property(r => r.Description)
                 .HasMaxLength(Route.DESCRIPTION_MAX_LENGTH)
                 .IsRequired(false);

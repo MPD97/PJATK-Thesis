@@ -9,8 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Thesis.Application;
 using Thesis.Application.Common.Interfaces;
+using Thesis.Infrastructure;
 using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Presistance;
 using Thesis.Infrastructure.Services;
@@ -47,7 +49,8 @@ namespace Thesis.WebUI.Server
 
             services.AddHttpContextAccessor();
 
-            services.AddDefaultIdentity<AppUser>(options => { 
+            services.AddDefaultIdentity<AppUser>(options =>
+            {
                 options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedAccount = false;
                 options.Password.RequireDigit = true;
@@ -65,16 +68,15 @@ namespace Thesis.WebUI.Server
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
-            
-            services.AddScoped<ITransaction, Transaction>();
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            services.AddInfrastructure();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDataSeederService dataSeeder, AppDbContext context)
         {
             if (env.IsDevelopment())
             {
@@ -88,6 +90,11 @@ namespace Thesis.WebUI.Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            context.Database.EnsureCreated();
+            context.Database.Migrate();
+
+            dataSeeder.CreateTestUser().Wait();
+            dataSeeder.CreateTestRoute().Wait();
 
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();

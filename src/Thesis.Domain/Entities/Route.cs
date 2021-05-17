@@ -1,19 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Thesis.Domain.Commons;
 using Thesis.Domain.Enums;
 using Thesis.Domain.Exceptions;
+using Thesis.Domain.Static;
 
 namespace Thesis.Domain.Entities
 {
     public class Route : AuditableEntity
     {
-        public int Id { get; set; }
+        public int Id { get; protected set; }
         public string Name
         {
-            get => name; set
+            get => name; protected set
             {
 
                 if (value == null)
@@ -33,28 +35,85 @@ namespace Thesis.Domain.Entities
                 name = value;
             }
         }
-        public string Description { get; set; }
-        public RouteDifficulty Difficulty { get; set; }
-        public int LengthKm
+        public string Description { get; protected set; }
+        public RouteDifficulty Difficulty { get; protected set; }
+        public int LengthInMeters
         {
-            get => lengthKm; set
+            get => lengthInMeters; set
             {
                 if (value < 1)
                 {
-                    throw new DomainLayerException($"Property {nameof(Route)}.{nameof(LengthKm)} cannot be less than 1.");
+                    throw new DomainLayerException($"Property {nameof(Route)}.{nameof(LengthInMeters)} cannot be less than 1.");
                 }
-                lengthKm = value;
+                lengthInMeters = value;
             }
         }
-        public RouteStatus Status { get; set; }
-        public virtual IList<Point> Points { get; set; }
-        public virtual IList<Run> Runs { get; set; }
+        public RouteStatus Status { get; protected set; } = RouteStatus.New;
+        public virtual IList<Point> Points { get; protected set; } = new List<Point>();
+        public virtual IList<Run> Runs { get; protected set; } = new List<Run>();
 
         public static readonly int NAME_MAX_LENGTH = 40;
         public static readonly int NAME_MIN_LENGTH = 4;
 
         public static readonly int DESCRIPTION_MAX_LENGTH = 500;
         private string name;
-        private int lengthKm;
+        private int lengthInMeters;
+
+
+        public Route()
+        {
+
+        }
+
+        public Route(string name, string description, RouteDifficulty difficulty, int userId)
+        {
+            Name = name;
+            Description = description;
+            Difficulty = difficulty;
+
+            Create(userId);
+        }
+
+
+        public void AddPoint(decimal latitude, decimal longitude, byte radius)
+        {
+            var order = (Points.Count + 1);
+            if (order == byte.MaxValue)
+            {
+                throw new DomainLayerException("Exceeded max number of points!");
+            }
+
+            var point = new Point(latitude, longitude, (byte)order, radius);
+
+            Points.Add(point);
+
+            if (Points.Count > 1)
+            {
+                LengthInMeters += (int)CoordinatesHelper.DistanceBetweenPlaces((double)Points[^2].Latitude, (double)Points[^2].Longitude, (double)Points[^1].Latitude, (double)Points[^1].Longitude);
+            }
+        }
+        public void ChangeDifficulty(RouteDifficulty difficulty, int userId)
+        {
+            if (Difficulty == difficulty)
+            {
+                throw new DomainLayerException("Cannot change difficulty to same difficulty");
+            }
+
+            Difficulty = difficulty;
+
+            Update(userId);
+        }
+
+        public void ChangeStatus(RouteStatus status, int userId)
+        {
+            if (Status == status)
+            {
+                throw new DomainLayerException("Cannot change status to same status");
+            }
+
+            Status = status;
+
+            Update(userId);
+        }
     }
 }
