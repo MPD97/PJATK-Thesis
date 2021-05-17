@@ -48,7 +48,7 @@ namespace Thesis.Domain.Entities
                 lengthKm = value;
             }
         }
-        public RouteStatus Status { get; protected set; }
+        public RouteStatus Status { get; protected set; } = RouteStatus.New;
         public virtual IList<Point> Points { get; protected set; } = new List<Point>();
         public virtual IList<Run> Runs { get; protected set; } = new List<Run>();
 
@@ -80,7 +80,7 @@ namespace Thesis.Domain.Entities
             var order = (Points.Count + 1);
             if (order == byte.MaxValue)
             {
-                throw new Exception("Exceeded max number of points!");
+                throw new DomainLayerException("Exceeded max number of points!");
             }
 
             var point = new Point(latitude, longitude, (byte)order, radius);
@@ -96,7 +96,7 @@ namespace Thesis.Domain.Entities
         {
             if (Difficulty == difficulty)
             {
-                throw new Exception("Cannot change difficulty to same difficulty");
+                throw new DomainLayerException("Cannot change difficulty to same difficulty");
             }
 
             Difficulty = difficulty;
@@ -108,7 +108,7 @@ namespace Thesis.Domain.Entities
         {
             if (Status == status)
             {
-                throw new Exception("Cannot change status to same status");
+                throw new DomainLayerException("Cannot change status to same status");
             }
 
             Status = status;
