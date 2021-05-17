@@ -56,5 +56,18 @@ namespace Thesis.Domain.Entities
         public static readonly int DESCRIPTION_MAX_LENGTH = 500;
         private string name;
         private int lengthKm;
+
+
+        public Route()
+        {
+
+        }
+        public Route(string name, string description, RouteDifficulty difficulty, IList<Point> points)
+        {
+            Name = name;
+            Description = description;
+            Difficulty = difficulty;
+            Points = points;
+        }
     }
 }
