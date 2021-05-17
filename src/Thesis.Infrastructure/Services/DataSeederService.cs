@@ -21,17 +21,20 @@ namespace Thesis.Infrastructure.Services
             _userManager = userManager;
         }
 
-        public Task CreateTestRoute()
-        {
-            var testUser = new AppUser()
-            {
-
-            }
-        }
-
-        public Task CreateTestUser()
+        public async Task CreateTestRoute()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task CreateTestUser()
+        {
+            var testUser = new AppUser("test@test.pl");
+
+            var existingUser = await _userManager.FindByEmailAsync(testUser.Email);
+            if (existingUser == null)
+            {
+                await _userManager.CreateAsync(testUser, "1qaz@WSX");
+            }
         }
     }
 }
