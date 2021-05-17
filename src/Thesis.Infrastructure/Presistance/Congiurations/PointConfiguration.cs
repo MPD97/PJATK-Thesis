@@ -11,10 +11,10 @@ namespace Thesis.Infrastructure.Presistance.Congiurations
             builder.HasKey(p => p.Id);
 
             builder.Property(p => p.Latitude)
-                .HasPrecision(9, 6);
+                .HasPrecision(11, 8);
 
             builder.Property(p => p.Longitude)
-                .HasPrecision(9, 6);
+                .HasPrecision(11, 8);
 
             builder.HasMany(p => p.CompletedPoints)
                 .WithOne(cp => cp.Point)
