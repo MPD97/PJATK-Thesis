@@ -22,4 +22,9 @@
     <ProjectReference Include="..\Thesis.Domain\Thesis.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Routes\Commands\" />
+    <Folder Include="Common\Routes\Queries\" />
+  </ItemGroup>
+
 </Project>
