@@ -17,7 +17,7 @@ namespace Thesis.Infrastructure.Services
             _repository = repository;
         }
 
-        public async Task<IReadOnlyList<Route>> GetRoutesInBoundaries(decimal topLeftLat, decimal topLefrLon, decimal topRightLat, decimal topRightLon, decimal bottomLeftLat, decimal bottomLeftLon, decimal bottomRightLat, decimal bottomRightLon, int take = 50)
+        public Task<IReadOnlyList<Route>> GetRoutesInBoundaries(decimal topLeftLat, decimal topLefrLon, decimal bottomRightLat, decimal bottomRightLon, int take = 50)
         {
             throw new NotImplementedException();
         }

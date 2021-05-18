@@ -10,8 +10,8 @@ using Thesis.Infrastructure.Presistance;
 namespace Thesis.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210517070813_Decimal_Precision_Increase")]
-    partial class Decimal_Precision_Increase
+    [Migration("20210518171646_Bussness_Entities")]
+    partial class Bussness_Entities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -289,6 +289,14 @@ namespace Thesis.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<decimal>("BottomLeftLatitude")
+                        .HasPrecision(11, 8)
+                        .HasColumnType("decimal(11,8)");
+
+                    b.Property<decimal>("BottomLeftLongitude")
+                        .HasPrecision(11, 8)
+                        .HasColumnType("decimal(11,8)");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
@@ -308,7 +316,7 @@ namespace Thesis.Infrastructure.Migrations
                     b.Property<int>("LastModifiedBy")
                         .HasColumnType("int");
 
-                    b.Property<int>("LengthKm")
+                    b.Property<int>("LengthInMeters")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -319,11 +327,29 @@ namespace Thesis.Infrastructure.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<decimal>("TopLeftLatitude")
+                        .HasPrecision(11, 8)
+                        .HasColumnType("decimal(11,8)");
+
+                    b.Property<decimal>("TopLeftLongitude")
+                        .HasPrecision(11, 8)
+                        .HasColumnType("decimal(11,8)");
+
+                    b.HasKey("Id")
+                        .IsClustered(false);
 
                     b.HasIndex("CreatedBy");
 
+                    b.HasIndex("Id")
+                        .IsUnique();
+
                     b.HasIndex("LastModifiedBy");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("TopLeftLatitude", "TopLeftLongitude", "BottomLeftLatitude", "BottomLeftLongitude")
+                        .IsClustered();
 
                     b.ToTable("Route");
                 });

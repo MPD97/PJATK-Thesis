@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Thesis.Infrastructure.Migrations
 {
-    public partial class Run_Point_Route_tables : Migration
+    public partial class Bussness_Entities : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,8 +16,12 @@ namespace Thesis.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Difficulty = table.Column<int>(type: "int", nullable: false),
-                    LengthKm = table.Column<int>(type: "int", nullable: false),
+                    LengthInMeters = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
+                    TopLeftLatitude = table.Column<decimal>(type: "decimal(11,8)", precision: 11, scale: 8, nullable: false),
+                    TopLeftLongitude = table.Column<decimal>(type: "decimal(11,8)", precision: 11, scale: 8, nullable: false),
+                    BottomLeftLatitude = table.Column<decimal>(type: "decimal(11,8)", precision: 11, scale: 8, nullable: false),
+                    BottomLeftLongitude = table.Column<decimal>(type: "decimal(11,8)", precision: 11, scale: 8, nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: false),
                     LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -25,7 +29,8 @@ namespace Thesis.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Route", x => x.Id);
+                    table.PrimaryKey("PK_Route", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
                         name: "FK_Route_User_CreatedBy",
                         column: x => x.CreatedBy,
@@ -45,8 +50,8 @@ namespace Thesis.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RouteId = table.Column<int>(type: "int", nullable: false),
-                    Latitude = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: false),
-                    Longitude = table.Column<decimal>(type: "decimal(9,6)", precision: 9, scale: 6, nullable: false),
+                    Latitude = table.Column<decimal>(type: "decimal(11,8)", precision: 11, scale: 8, nullable: false),
+                    Longitude = table.Column<decimal>(type: "decimal(11,8)", precision: 11, scale: 8, nullable: false),
                     Order = table.Column<byte>(type: "tinyint", nullable: false),
                     Radius = table.Column<byte>(type: "tinyint", nullable: false)
                 },
@@ -136,9 +141,27 @@ namespace Thesis.Infrastructure.Migrations
                 column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Route_Id",
+                table: "Route",
+                column: "Id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Route_LastModifiedBy",
                 table: "Route",
                 column: "LastModifiedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Route_Name",
+                table: "Route",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Route_TopLeftLatitude_TopLeftLongitude_BottomLeftLatitude_BottomLeftLongitude",
+                table: "Route",
+                columns: new[] { "TopLeftLatitude", "TopLeftLongitude", "BottomLeftLatitude", "BottomLeftLongitude" })
+                .Annotation("SqlServer:Clustered", true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Run_RouteId",

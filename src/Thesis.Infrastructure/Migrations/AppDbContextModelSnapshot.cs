@@ -287,6 +287,14 @@ namespace Thesis.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<decimal>("BottomLeftLatitude")
+                        .HasPrecision(11, 8)
+                        .HasColumnType("decimal(11,8)");
+
+                    b.Property<decimal>("BottomLeftLongitude")
+                        .HasPrecision(11, 8)
+                        .HasColumnType("decimal(11,8)");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
@@ -317,14 +325,29 @@ namespace Thesis.Infrastructure.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<decimal>("TopLeftLatitude")
+                        .HasPrecision(11, 8)
+                        .HasColumnType("decimal(11,8)");
+
+                    b.Property<decimal>("TopLeftLongitude")
+                        .HasPrecision(11, 8)
+                        .HasColumnType("decimal(11,8)");
+
+                    b.HasKey("Id")
+                        .IsClustered(false);
 
                     b.HasIndex("CreatedBy");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
 
                     b.HasIndex("LastModifiedBy");
 
                     b.HasIndex("Name")
                         .IsUnique();
+
+                    b.HasIndex("TopLeftLatitude", "TopLeftLongitude", "BottomLeftLatitude", "BottomLeftLongitude")
+                        .IsClustered();
 
                     b.ToTable("Route");
                 });
