@@ -13,12 +13,6 @@ namespace Thesis.Application.Common.Routes.Queries
         public decimal TopLeftLat { get; }
         public decimal TopLeftLon { get; }
 
-        public decimal TopRightLat { get; }
-        public decimal TopRightLon { get; }
-
-        public decimal BottomLeftLat { get; }
-        public decimal BottomLeftLon { get; }
-
         public decimal BottomRightLat { get; }
         public decimal BottomRightLon { get; }
     }

@@ -39,5 +39,49 @@ namespace Thesis.Domain.Static
         {
             return x * PIx / 180;
         }
+
+        public static SquareBoundary GetBoundaries(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal lat, decimal lon)
+        {
+            var sBoundary = new SquareBoundary(topLeftLat, topLeftLon, bottomRightLat, bottomRightLon);
+
+            if (lat > sBoundary.TopLeftLat)
+            {
+                sBoundary.TopLeftLat = lat;
+            }
+
+            if (lon > sBoundary.BottomLeftLon)
+            {
+                sBoundary.BottomLeftLon = lon;
+            }
+
+            if (lon < sBoundary.TopLeftLon)
+            {
+                sBoundary.TopLeftLon = lon;
+            }
+
+            if (lat < sBoundary.BottomLeftLat)
+            {
+                sBoundary.BottomLeftLat = lat;
+            }
+
+            return sBoundary;
+        }
+
+        public struct SquareBoundary
+        {
+            public decimal TopLeftLat { get; set; }
+            public decimal TopLeftLon { get; set; }
+
+            public decimal BottomLeftLat { get; set; }
+            public decimal BottomLeftLon { get; set; }
+
+            public SquareBoundary(decimal topLeftLat, decimal topLeftLon, decimal bottomLeftLat, decimal bottomLeftLon)
+            {
+                TopLeftLat = topLeftLat;
+                TopLeftLon = topLeftLon;
+                BottomLeftLat = bottomLeftLat;
+                BottomLeftLon = bottomLeftLon;
+            }
+        }
     }
 }
