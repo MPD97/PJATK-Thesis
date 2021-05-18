@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,9 +18,19 @@ namespace Thesis.Infrastructure.Services
             _repository = repository;
         }
 
-        public Task<IReadOnlyList<Route>> GetRoutesInBoundaries(decimal topLeftLat, decimal topLefrLon, decimal bottomRightLat, decimal bottomRightLon, int take = 50)
+        public async Task<IReadOnlyList<Route>> GetRoutesInBoundaries(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, int take = 50)
         {
-            throw new NotImplementedException();
+            var routes = await _repository
+                .GetAll()
+                .AsNoTracking()
+                .Where(r => topLeftLat <= r.TopLeftLatitude)
+                .Where(r => topLeftLon >= r.TopLeftLongitude)
+                .Where(r => topLeftLat >= r.BottomLeftLatitude)
+                .Where(r => topLeftLat <= r.BottomLeftLongitude)
+                .Take(50)
+                .ToArrayAsync();
+
+            return routes;
         }
     }
 }

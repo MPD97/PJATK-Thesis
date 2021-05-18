@@ -7,6 +7,7 @@ using Thesis.Domain.Commons;
 using Thesis.Domain.Enums;
 using Thesis.Domain.Exceptions;
 using Thesis.Domain.Static;
+using static Thesis.Domain.Static.CoordinatesHelper;
 
 namespace Thesis.Domain.Entities
 {
@@ -120,7 +121,7 @@ namespace Thesis.Domain.Entities
         public static readonly int NAME_MIN_LENGTH = 4;
 
         public static readonly int DESCRIPTION_MAX_LENGTH = 500;
-    
+
         public static readonly decimal LATITUDE_MIN_VALUE = -90M;
         public static readonly decimal LATITUDE_MAX_VALUE = 90M;
 
@@ -165,7 +166,13 @@ namespace Thesis.Domain.Entities
 
             if (Points.Count > 1)
             {
-                LengthInMeters += (int)CoordinatesHelper.DistanceBetweenPlaces((double)Points[^2].Latitude, (double)Points[^2].Longitude, (double)Points[^1].Latitude, (double)Points[^1].Longitude);
+                LengthInMeters += (int)DistanceBetweenPlaces((double)Points[^2].Latitude, (double)Points[^2].Longitude, (double)Points[^1].Latitude, (double)Points[^1].Longitude);
+             
+                SetBoundaries(GetBoundaries(TopLeftLatitude, TopLeftLongitude, BottomLeftLatitude, BottomLeftLongitude, latitude, longitude));
+            }
+            else
+            {
+                SetBoundaries(new SquareBoundary(latitude, longitude, latitude, longitude));
             }
         }
         public void ChangeDifficulty(RouteDifficulty difficulty, int userId)
@@ -190,6 +197,14 @@ namespace Thesis.Domain.Entities
             Status = status;
 
             Update(userId);
+        }
+        private void SetBoundaries(SquareBoundary boundary)
+        {
+            TopLeftLatitude = boundary.TopLeftLat;
+            TopLeftLongitude = boundary.TopLeftLon;
+
+            BottomLeftLatitude = boundary.BottomLeftLat;
+            BottomLeftLongitude = boundary.BottomLeftLon;
         }
     }
 }

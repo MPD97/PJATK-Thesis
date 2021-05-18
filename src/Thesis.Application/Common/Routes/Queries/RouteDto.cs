@@ -12,7 +12,7 @@ namespace Thesis.Application.Common.Routes.Queries
         public string Description { get; protected set; }
         public RouteDifficulty Difficulty { get; protected set; }
         public int LengthInMeters { get; protected set; }
-
+        
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Route, RouteDto>();

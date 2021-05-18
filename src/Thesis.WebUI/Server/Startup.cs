@@ -37,6 +37,8 @@ namespace Thesis.WebUI.Server
 
             services.AddConfigurations(Configuration);
 
+            services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
             var cs = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<AppDbContext>(options =>

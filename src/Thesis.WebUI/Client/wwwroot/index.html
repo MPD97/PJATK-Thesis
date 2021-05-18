@@ -57,6 +57,17 @@
                     new L.Hash(map);
                 }, 0);
             }
+
+            map.on('moveend', (eventData) => {
+                let sendAction = true;
+                if (eventData && eventData.originalEvent && eventData.originalEvent.type === 'resize') {
+                    sendAction = false;
+                }
+
+                if (sendAction) {
+                    // do the thing
+                }
+            }
         }
     </script>
 </head>
