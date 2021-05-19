@@ -25,6 +25,7 @@
     <script>
         var map = undefined;
         var pluginSet = false;
+
         function initMap() {
             console.log("map init");
             var q = (location.search || '').substr(1).split('&');
@@ -58,17 +59,40 @@
                 }, 0);
             }
 
-            map.on('moveend', (eventData) => {
-                let sendAction = true;
-                if (eventData && eventData.originalEvent && eventData.originalEvent.type === 'resize') {
-                    sendAction = false;
-                }
 
-                if (sendAction) {
-                    // do the thing
-                }
-            }
         }
+        window.scroll = {
+            init: dotnetHelper => {
+
+                map.on('moveend', (eventData) => {
+                    let sendAction = true;
+                    if (eventData && eventData.originalEvent && eventData.originalEvent.type === 'resize') {
+                        sendAction = false;
+                    }
+
+                    if (sendAction) {
+                        console.debug('map move end');
+
+                        let canvas = map.getCanvas()
+                        let w = canvas.width
+                        let h = canvas.height
+
+                        let cUL = map.unproject([0, 0]).toArray()
+                        console.debug("cUL: " + cUL);
+
+                        let cLR = map.unproject([w, h]).toArray()
+                        console.debug("cLR: " + cLR);
+
+                        var zoom = map.getZoom();
+
+                        dotnetHelper.invokeMethodAsync('GetRoutes', cUL[1], cUL[0], cLR[1], cLR[0], zoom)
+                            .then(result => {
+                                console.log(result);
+                            });
+                    }
+                });
+            }
+        };
     </script>
 </head>
 

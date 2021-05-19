@@ -13,7 +13,7 @@ namespace Thesis.WebUI.Server.Controllers
         {
             var result = await Mediator.Send(query);
 
-            return result;
+            return Ok(result);
         }
     }
 }

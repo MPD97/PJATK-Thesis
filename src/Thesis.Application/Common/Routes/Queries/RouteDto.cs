@@ -7,11 +7,11 @@ namespace Thesis.Application.Common.Routes.Queries
 {
     public class RouteDto : IMapFrom<Route>
     {
-        public int Id { get; protected set; }
-        public string Name { get; protected set; }
-        public string Description { get; protected set; }
-        public RouteDifficulty Difficulty { get; protected set; }
-        public int LengthInMeters { get; protected set; }
+        public int Id { get;  set; }
+        public string Name { get;  set; }
+        public string Description { get;  set; }
+        public RouteDifficulty Difficulty { get;  set; }
+        public int LengthInMeters { get;  set; }
         
         public void Mapping(Profile profile)
         {

@@ -6,7 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Thesis.Application.Common.Interfaces;
 
-namespace Thesis.WebUI.Server.Services
+namespace Thesis.WebUI.Client.Services
 {
     public class CurrentUserService : ICurrentUserService
     {

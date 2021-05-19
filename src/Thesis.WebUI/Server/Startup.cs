@@ -16,7 +16,7 @@ using Thesis.Infrastructure;
 using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Presistance;
 using Thesis.Infrastructure.Services;
-using Thesis.WebUI.Server.Services;
+using Thesis.WebUI.Client.Services;
 
 namespace Thesis.WebUI.Server
 {
@@ -46,8 +46,6 @@ namespace Thesis.WebUI.Server
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
-
-            services.AddSingleton<ICurrentUserService, CurrentUserService>();
 
             services.AddHttpContextAccessor();
 
