@@ -39,6 +39,7 @@ namespace Thesis.Application.Common.Routes.Queries
             var routes = _repository
                  .GetAll()
                  .AsNoTracking()
+                 .Include(x => x.Points)
                  .Where(r => request.TopLeftLat >= r.TopLeftLatitude)
                  .Where(r => request.TopLeftLon <= r.TopLeftLongitude)
                  .Where(r => request.BottomRightLat <= r.BottomLeftLatitude)

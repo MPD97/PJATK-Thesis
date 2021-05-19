@@ -88,6 +88,16 @@
                         dotnetHelper.invokeMethodAsync('GetRoutes', cUL[1], cUL[0], cLR[1], cLR[0], zoom)
                             .then(result => {
                                 console.log(result);
+
+                                $.each(result.routes, function (index, route) {
+
+                                    $.each(route.points, function (index, point) {
+
+                                        var marker = new mapboxgl.Marker()
+                                            .setLngLat([point.longitude, point.latitude])
+                                            .addTo(map);
+                                    });
+                                });
                             });
                     }
                 });
