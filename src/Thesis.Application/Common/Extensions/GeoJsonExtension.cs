@@ -19,7 +19,7 @@ namespace Thesis.Application.Common.Extensions
                 .Select(o => new decimal[2] { o.Longitude, o.Latitude })
                 .To2DArray();
 
-            geoJson.Data.Geometry.GeoJsonCoordinates = sortedPoints;
+            geoJson.Data.Geometry.Coordinates = sortedPoints;
 
             return geoJson;
         }

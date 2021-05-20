@@ -1,6 +1,8 @@
 ﻿@page "/map"
 @using Thesis.Application.Common.Routes.Queries.GetRoutes
 @using System.Net.Http
+@using Thesis.Application.Common.Models.GeoJson.Line;
+@using System.Threading
 
 @inject IJSRuntime jSRuntime
 @inject HttpClient Http
@@ -43,6 +45,19 @@
     public async Task<GetRoutesVM> GetRoutes(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal currentZoom)
     {
         var result = await Http.GetFromJsonAsync<GetRoutesVM>($"api/Route?TopLeftLat={topLeftLat}&TopLeftLon={topLeftLon}&BottomRightLat={bottomRightLat}&BottomRightLon={bottomRightLon}");
+
+        return result;
+    }
+
+    [JSInvokable("GetRoutesGeoJson")]
+    public async Task<string> GetRoutesGeoJson(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal currentZoom)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/Route?TopLeftLat={topLeftLat}&TopLeftLon={topLeftLon}&BottomRightLat={bottomRightLat}&BottomRightLon={bottomRightLon}");
+        request.Headers.Add("Format", "GeoJson");
+
+        var httpResponse = await Http.SendAsync(request);
+
+        var result = await httpResponse.Content.ReadAsStringAsync();
 
         return result;
     }

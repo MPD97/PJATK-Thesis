@@ -85,17 +85,28 @@
 
                         var zoom = map.getZoom();
 
-                        dotnetHelper.invokeMethodAsync('GetRoutes', cUL[1], cUL[0], cLR[1], cLR[0], zoom)
+                        dotnetHelper.invokeMethodAsync('GetRoutesGeoJson', cUL[1], cUL[0], cLR[1], cLR[0], zoom)
                             .then(result => {
+
+                                result = JSON.parse(result);
                                 console.log(result);
 
-                                $.each(result.routes, function (index, route) {
+                                $.each(result.sources, function (index, source) {
 
-                                    $.each(route.points, function (index, point) {
+                                    map.addSource('route-' + index, source);
 
-                                        var marker = new mapboxgl.Marker()
-                                            .setLngLat([point.longitude, point.latitude])
-                                            .addTo(map);
+                                    map.addLayer({
+                                        'id': 'route-' + index,
+                                        'type': 'line',
+                                        'source': 'route-' + index,
+                                        'layout': {
+                                            'line-join': 'round',
+                                            'line-cap': 'round'
+                                        },
+                                        'paint': {
+                                            'line-color': '#888',
+                                            'line-width': 8
+                                        }
                                     });
                                 });
                             });

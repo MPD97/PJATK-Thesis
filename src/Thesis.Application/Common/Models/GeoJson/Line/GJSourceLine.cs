@@ -7,7 +7,7 @@ using Thesis.Application.Common.Models.GeoJson.Base;
 
 namespace Thesis.Application.Common.Models.GeoJson.Line
 {
-    public class GJLine : GJBase
+    public class GJSourceLine : GJSourceBase
     {
         public new GJDataLine Data { get; set; } = new();
     }

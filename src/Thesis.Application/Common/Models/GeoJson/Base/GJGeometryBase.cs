@@ -3,6 +3,6 @@
     public abstract class GJGeometryBase
     {
         public string Type { get; set; }
-        public decimal[,] GeoJsonCoordinates { get; set; }
+        public decimal[,] Coordinates { get; set; }
     }
 }
