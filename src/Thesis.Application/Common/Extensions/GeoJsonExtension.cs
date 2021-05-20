@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,11 +10,11 @@ namespace Thesis.Application.Common.Extensions
 {
     public static class GeoJsonExtension
     {
-        public static GJLine ToGeoJson(this RouteDto rote)
+        public static GJSourceLine ToGeoJson(this RouteDto route)
         {
-            var geoJson = new GJLine();
+            var geoJson = new GJSourceLine();
 
-            var sortedPoints = rote.Points
+            var sortedPoints = route.Points
                 .OrderBy(o => o.Order)
                 .Select(o => new decimal[2] { o.Longitude, o.Latitude })
                 .To2DArray();
@@ -21,6 +22,18 @@ namespace Thesis.Application.Common.Extensions
             geoJson.Data.Geometry.GeoJsonCoordinates = sortedPoints;
 
             return geoJson;
+        }
+
+        public static IEnumerable<GJSourceLine> ToGeoJson(this IEnumerable<RouteDto> routes)
+        {
+            var geoJsons = new List<GJSourceLine>(routes.Count());
+
+            foreach (var route in routes)
+            {
+                geoJsons.Add(route.ToGeoJson());
+            }
+
+            return geoJsons;
         }
     }
 }

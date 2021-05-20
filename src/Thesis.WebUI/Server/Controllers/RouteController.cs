@@ -23,14 +23,15 @@ namespace Thesis.WebUI.Server.Controllers
         }
 
         [HttpGet, HttpHeader("Format", "GeoJson")]
-        public async Task<ActionResult<IReadOnlyList<GJLine>>> GetGeoJson([FromQuery] GetRoutesQuery query, CancellationToken token)
+        public async Task<ActionResult<IReadOnlyList<GJSourceLine>>> GetGeoJson([FromQuery] GetRoutesQuery query, CancellationToken token)
         {
             var result = await Mediator.Send(query, token);
 
-            var gjs = result.Routes.Select(x => x.ToGeoJson()).ToList();
+            var gjs = result.Routes
+                .ToGeoJson()
+                .ToList();
 
             return Ok(gjs);
         }
-
     }
 }
