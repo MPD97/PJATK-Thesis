@@ -14,7 +14,6 @@ using Thesis.Application.Common.Interfaces;
 using Thesis.Infrastructure;
 using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Presistance;
-using Thesis.WebUI.Client.Services;
 using Microsoft.AspNetCore.Identity;
 
 namespace Thesis.WebUI.Client
