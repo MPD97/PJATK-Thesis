@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Thesis.Application.Common.Routes.Queries
+namespace Thesis.Application.Common.Routes.Queries.GetRoutes
 {
     public class GetRoutesVM
     {

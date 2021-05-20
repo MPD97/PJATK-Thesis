@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
-using Thesis.Application.Common.Routes.Queries;
+using Thesis.Application.Common.Routes.Queries.GetRoutes;
 
 namespace Thesis.WebUI.Server.Controllers
 {

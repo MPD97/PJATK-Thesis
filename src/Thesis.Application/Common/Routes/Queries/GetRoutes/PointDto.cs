@@ -2,7 +2,7 @@
 using Thesis.Application.Common.Mappings;
 using Thesis.Domain.Entities;
 
-namespace Thesis.Application.Common.Routes.Queries
+namespace Thesis.Application.Common.Routes.Queries.GetRoutes
 {
     public class PointDto : IMapFrom<Point>
     {

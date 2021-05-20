@@ -10,7 +10,7 @@ using Thesis.Application.Common.Interfaces;
 using Thesis.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Thesis.Application.Common.Routes.Queries
+namespace Thesis.Application.Common.Routes.Queries.GetRoutes
 {
     public class GetRoutesQuery : IRequest<GetRoutesVM>
     {

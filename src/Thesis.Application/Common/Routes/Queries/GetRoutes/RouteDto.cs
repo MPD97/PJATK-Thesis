@@ -4,7 +4,7 @@ using Thesis.Application.Common.Mappings;
 using Thesis.Domain.Entities;
 using Thesis.Domain.Enums;
 
-namespace Thesis.Application.Common.Routes.Queries
+namespace Thesis.Application.Common.Routes.Queries.GetRoutes
 {
     public class RouteDto : IMapFrom<Route>
     {
