@@ -17,7 +17,7 @@ namespace Thesis.Application.Common.Extensions
             var sortedPoints = route.Points
                 .OrderBy(o => o.Order)
                 .Select(o => new decimal[2] { o.Longitude, o.Latitude })
-                .To2DArray();
+                .ToArray();
 
             geoJson.Data.Geometry.Coordinates = sortedPoints;
 
