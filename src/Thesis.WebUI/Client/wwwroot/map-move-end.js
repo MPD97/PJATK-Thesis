@@ -4,6 +4,7 @@
         let lastBR = [];
         let sources = [];
         let layers = [];
+        let sourcesCount = 0;
 
         map.on('moveend', (eventData) => {
             let canvas = map.getCanvas()
@@ -14,7 +15,7 @@
             let coordBottomRight = map.unproject([w, h]).toArray()
 
             if (lastTL.length == 2 || lastBR.length == 2) {
-                if (lastTL[1] >= coordTopLeft[1] && lastTL[0] <= coordTopLeft[0] && lastBR[1] <= coordBottomRight[1] && lastBR[0] >= coordBottomRight[0]) {
+                if (sourcesCount < 50 && lastTL[1] >= coordTopLeft[1] && lastTL[0] <= coordTopLeft[0] && lastBR[1] <= coordBottomRight[1] && lastBR[0] >= coordBottomRight[0]) {
                     console.log("skip");
                     return;
                 }
@@ -29,7 +30,6 @@
             dotnetHelper.invokeMethodAsync('GetRoutesGeoJson', coordTopLeft[1], coordTopLeft[0], coordBottomRight[1], coordBottomRight[0], zoom)
                 .then(result => {
 
-
                     $.each(layers, function (index, value) {
                         map.removeLayer(value);
                     });
@@ -37,7 +37,6 @@
                     $.each(sources, function (index, value) {
                         map.removeSource(value);
                     });
-
                   
                     sources = [];
                     layers = [];
@@ -62,6 +61,7 @@
                         });
                         layers.push('route-' + index);
                     });
+                    sourcesCount = result.sources.length;
                 });
         });
     }
