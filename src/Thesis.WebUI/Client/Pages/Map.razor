@@ -1,10 +1,4 @@
 ﻿@page "/map"
-@using Thesis.Application.Common.Routes.Queries.GetRoutes
-@using System.Net.Http
-@using Thesis.Application.Common.Models.GeoJson.Line;
-@using System.Threading
-@using Thesis.Application.Common.Models.GeoJson.Base
-
 
 @inject IJSRuntime jSRuntime
 @inject HttpClient Http
@@ -35,9 +29,9 @@
     {
         if (firstRender)
         {
-            await jSRuntime.InvokeVoidAsync("initMap");
+            await jSRuntime.InvokeVoidAsync("createMap");
 
-            jSRuntime.InvokeVoidAsync("scroll.init", DotNetObjectReference.Create(this));
+            await jSRuntime.InvokeVoidAsync("mapHelper.init", DotNetObjectReference.Create(this));
         }
 
         await base.OnAfterRenderAsync(firstRender);
@@ -46,20 +40,20 @@
     [JSInvokable("GetRoutes")]
     public async Task<GetRoutesVM> GetRoutes(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal currentZoom)
     {
-        var result = await Http.GetFromJsonAsync<GetRoutesVM>($"api/Route?TopLeftLat={topLeftLat}&TopLeftLon={topLeftLon}&BottomRightLat={bottomRightLat}&BottomRightLon={bottomRightLon}");
+        var result = await Http.GetFromJsonAsync<GetRoutesVM>($"api/Route?TopLeftLat={topLeftLat.ToString(CultureInfo.InvariantCulture)}&TopLeftLon={topLeftLon.ToString(CultureInfo.InvariantCulture)}&BottomRightLat={bottomRightLat.ToString(CultureInfo.InvariantCulture)}&BottomRightLon={bottomRightLon.ToString(CultureInfo.InvariantCulture)}");
 
         return result;
     }
 
     [JSInvokable("GetRoutesGeoJson")]
-    public async Task<string> GetRoutesGeoJson(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal currentZoom)
+    public async Task<GJSourceLineResult> GetRoutesGeoJson(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal currentZoom)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"api/Route?TopLeftLat={topLeftLat}&TopLeftLon={topLeftLon}&BottomRightLat={bottomRightLat}&BottomRightLon={bottomRightLon}");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/Route?TopLeftLat={topLeftLat.ToString(CultureInfo.InvariantCulture)}&TopLeftLon={topLeftLon.ToString(CultureInfo.InvariantCulture)}&BottomRightLat={bottomRightLat.ToString(CultureInfo.InvariantCulture)}&BottomRightLon={bottomRightLon.ToString(CultureInfo.InvariantCulture)}");
         request.Headers.Add("Format", "GeoJson");
 
         var httpResponse = await Http.SendAsync(request);
 
-        var result = await httpResponse.Content.ReadAsStringAsync();
+        var result = await httpResponse.Content.ReadFromJsonAsync<GJSourceLineResult>();
 
         return result;
     }

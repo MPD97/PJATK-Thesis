@@ -31,7 +31,6 @@ namespace Thesis.WebUI.Server.Controllers
             var gjs = result.Routes
                 .ToGeoJson()
                 .ToArray();
-
             return Ok(new GJSourceResult(gjs));
         }
     }
