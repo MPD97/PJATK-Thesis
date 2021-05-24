@@ -57,4 +57,17 @@
 
         return result;
     }
+
+    [JSInvokable("GetRoutesGeoJsonQuick")]
+    public async Task<GJSourceLineResultVM> GetRoutesGeoJsonQuick(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal currentZoom)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/Route?TopLeftLat={topLeftLat.ToString(CultureInfo.InvariantCulture)}&TopLeftLon={topLeftLon.ToString(CultureInfo.InvariantCulture)}&BottomRightLat={bottomRightLat.ToString(CultureInfo.InvariantCulture)}&BottomRightLon={bottomRightLon.ToString(CultureInfo.InvariantCulture)}");
+        request.Headers.Add("Format", "GeoJsonQuick");
+
+        var httpResponse = await Http.SendAsync(request);
+
+        var result = await httpResponse.Content.ReadFromJsonAsync<GJSourceLineResultVM>();
+
+        return result;
+    }
 }

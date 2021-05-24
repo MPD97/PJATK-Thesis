@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Thesis.Application.Common.Interfaces;
 using Thesis.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Thesis.Domain.Enums;
 
 namespace Thesis.Application.Common.Routes.Queries.GetRoutes
 {
@@ -40,6 +41,7 @@ namespace Thesis.Application.Common.Routes.Queries.GetRoutes
                  .GetAll()
                  .AsNoTracking()
                  .Include(x => x.Points)
+                 .Where(r => r.Status == RouteStatus.Accepted)
                  .Where(r => request.TopLeftLat >= r.TopLeftLatitude)
                  .Where(r => request.TopLeftLon <= r.TopLeftLongitude)
                  .Where(r => request.BottomRightLat <= r.BottomLeftLatitude)

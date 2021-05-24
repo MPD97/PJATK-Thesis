@@ -16,52 +16,56 @@
 
             if (lastTL.length == 2 || lastBR.length == 2) {
                 if (sourcesCount < 50 && lastTL[1] >= coordTopLeft[1] && lastTL[0] <= coordTopLeft[0] && lastBR[1] <= coordBottomRight[1] && lastBR[0] >= coordBottomRight[0]) {
-                    console.log("skip");
                     return;
                 }
             }
-            console.log("continyue");
 
             lastTL = coordTopLeft;
             lastBR = coordBottomRight;
 
             let zoom = map.getZoom();
 
-            dotnetHelper.invokeMethodAsync('GetRoutesGeoJson', coordTopLeft[1], coordTopLeft[0], coordBottomRight[1], coordBottomRight[0], zoom)
-                .then(result => {
+            dotnetHelper.invokeMethodAsync('GetRoutesGeoJsonQuick', coordTopLeft[1], coordTopLeft[0], coordBottomRight[1], coordBottomRight[0], zoom)
+                .then(json => {
 
-                    $.each(layers, function (index, value) {
-                        map.removeLayer(value);
-                    });
+                    //$.each(layers, function (index, value) {
+                    //    map.removeLayer(value);
+                    //});
 
-                    $.each(sources, function (index, value) {
-                        map.removeSource(value);
-                    });
-                  
-                    sources = [];
-                    layers = [];
+                    //$.each(sources, function (index, value) {
+                    //    map.removeSource(value);
+                    //});
 
-                    $.each(result.sources, function (index, source) {
+                    //sources = [];
+                    //layers = [];
 
-                        map.addSource('route-' + index, source);
-                        sources.push('route-' + index);
+                    $.each(json.results, function (index, result) {
+
+                        const sourceId = 'route-' + result.sourceId;
+
+                        if (jQuery.inArray(sourceId, sources) !== -1) {
+                            return;
+                        }
+
+                        map.addSource(sourceId, result.source);
+                        sources.push(sourceId);
 
                         map.addLayer({
-                            'id': 'route-' + index,
+                            'id': sourceId,
                             'type': 'line',
-                            'source': 'route-' + index,
+                            'source': sourceId,
                             'layout': {
                                 'line-join': 'round',
                                 'line-cap': 'round'
                             },
                             'paint': {
                                 'line-color': '#888',
-                                'line-width': 8
+                                'line-width': 6
                             }
                         });
-                        layers.push('route-' + index);
+                        layers.push(sourceId);
                     });
-                    sourcesCount = result.sources.length;
+                    sourcesCount = json.results.length;
                 });
         });
     }

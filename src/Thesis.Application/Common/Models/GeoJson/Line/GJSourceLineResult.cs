@@ -2,18 +2,18 @@
 
 namespace Thesis.Application.Common.Models.GeoJson.Line
 {
-    public class GJSourceLineResult
+    public class GJSourceLineResultVM
     {
-        public virtual IReadOnlyCollection<GJSourceLine> Sources { get; set; }
+        public virtual IReadOnlyCollection<GJSourceLineResult> Results { get; set; }
 
-        public GJSourceLineResult()
+        public GJSourceLineResultVM()
         {
 
         }
 
-        public GJSourceLineResult(IReadOnlyCollection<GJSourceLine> sources)
+        public GJSourceLineResultVM(IReadOnlyCollection<GJSourceLineResult> results)
         {
-            Sources = sources;
+            Results = results;
         }
     }
 }

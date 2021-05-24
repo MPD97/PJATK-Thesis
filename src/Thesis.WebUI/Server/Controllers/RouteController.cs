@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Thesis.Application.Common.Extensions;
 using Thesis.Application.Common.Models.GeoJson.Base;
 using Thesis.Application.Common.Models.GeoJson.Line;
+using Thesis.Application.Common.Models.GeoJson.Route;
 using Thesis.Application.Common.Routes.Queries.GetRoutes;
 using Thesis.WebUI.Server.Attributes;
 
@@ -31,7 +32,30 @@ namespace Thesis.WebUI.Server.Controllers
             var gjs = result.Routes
                 .ToGeoJson()
                 .ToArray();
+
             return Ok(new GJSourceResult(gjs));
+        }
+        [HttpGet, HttpHeader("Format", "GeoJsonQuick")]
+        public async Task<ActionResult<GJSourceResult>> GetGeoJsonQuick([FromQuery] GetRoutesQuery query, CancellationToken token)
+        {
+            var result = await Mediator.Send(query, token);
+
+            var gjs = result.Routes
+                .ToGeoJsonResult()
+                .ToArray();
+
+            return Ok(new GJSourceLineResultVM(gjs));
+        }
+        [HttpGet, HttpHeader("Format", "GeoJsonVM")]
+        public async Task<ActionResult<ICollection<RouteVM>>> GetGeoJsonVM([FromQuery] GetRoutesQuery query, CancellationToken token)
+        {
+            var result = await Mediator.Send(query, token);
+
+            var gjs = result.Routes
+                .ToGeoJsonVM()
+                .ToArray();
+
+            return Ok(gjs);
         }
     }
 }
