@@ -1,5 +1,9 @@
 ﻿const colors = ["#00DC30", "#2D35FF", "#DC0D00", "#000000"];
-
+const geolocationOptions = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0
+};
 window.mapHelper = {
     init: dotnetHelper => {
         let lastTL = [];
@@ -93,12 +97,65 @@ window.mapHelper = {
                                 ],
                                 'text-allow-overlap': true,
                                 'icon-anchor': 'bottom',
-                                'text-offset': [0, 1.25],
+                                "icon-size": 1.25,
+                                'text-offset': [0, 0.2],
                                 'text-anchor': 'top'
                             },
                             'filter': ['==', '$type', 'Point']
                         });
                         layers.push(routeId);
+
+                        var popup = new mapboxgl.Popup({
+                            closeButton: true,
+                            closeOnClick: false,
+                            offset: [0, -50]
+                        });
+
+                        map.on('click', 'sp-' + routeId, function (e) {
+                            console.log('enter');
+                            var coordinates = e.features[0].geometry.coordinates.slice();
+                            var routeName = e.features[0].properties.title;
+
+                            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                            }
+                            function error(err) {
+                                console.warn(`ERROR(${err.code}): ${err.message}`);
+                            }
+                            navigator.geolocation.getCurrentPosition(function (position) {
+                                var crd = position.coords;
+                                console.log('Your current position is:');
+                                console.log(`Latitude : ${crd.latitude}`);
+                                console.log(`Longitude: ${crd.longitude}`);
+                                console.log(`More or less ${crd.accuracy} meters.`);
+
+                                var lat = position.coords.latitude;
+                                var long = position.coords.longitude;
+                                var distance = CalculateDistance(coordinates[1], coordinates[0], lat, long);
+
+                                var value = "Rozpocznij";
+                                if (crd.accuracy > 150) {
+                                    value = "Zbyt słaby sygnał";
+                                }
+                                if (distance > 50) {
+                                    value = "Jesteś za daleko";
+                                }
+
+                                var btn = '<button class="btn btn-primary">' + value + '</button>';
+                                var h1 = '<h1>' + routeName + '</h1>';
+                                var p = '<p> odległość: ' + distance.toFixed(0) + ' metrów</p>';
+
+                                popup.setLngLat(coordinates).setHTML(h1 + p + btn).addTo(map);
+                            }, error, geolocationOptions);
+
+                        });
+                        map.on('mouseenter', 'sp-' + routeId, function (e) {
+                            map.getCanvas().style.cursor = 'pointer';
+                        });
+
+                        map.on('mouseleave', 'sp-' + routeId, function () {
+                            map.getCanvas().style.cursor = '';
+                        });
                     });
                     sourcesCount = json.length;
                 });

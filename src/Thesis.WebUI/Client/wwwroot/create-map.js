@@ -1,6 +1,7 @@
-﻿var map = undefined;
-var pluginSet = false;
-
+﻿let map = undefined;
+let pluginSet = false;
+let geolocation = false;
+let geolocate = undefined;
 function createMap() {
     console.log("map init");
     var q = (location.search || '').substr(1).split('&');
@@ -24,6 +25,14 @@ function createMap() {
 
         map.addControl(new mapboxgl.NavigationControl());
         map.addControl(new mapboxgl.FullscreenControl());
+        geolocate = new mapboxgl.GeolocateControl({
+            positionOptions: {
+                enableHighAccuracy: true
+            },
+            trackUserLocation: true
+        });
+        map.addControl(geolocate);
+
 
     } else {
         console.log("map raster");
@@ -63,5 +72,6 @@ function createMap() {
                 map.addImage('marker-4', image);
             }
         );
+        $(".mapboxgl-ctrl-geolocate").click();
     });
 }

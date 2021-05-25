@@ -9,7 +9,7 @@ namespace Thesis.Domain.Static
     public static class CoordinatesHelper
     {
         private const double PIx = Math.PI;
-        private const int EarthRadius = 6371000;
+        private const int EarthRadius = 6378137;
 
         /// <summary>
         /// Calculate distance between two points
