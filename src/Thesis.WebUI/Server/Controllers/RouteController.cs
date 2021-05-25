@@ -25,37 +25,16 @@ namespace Thesis.WebUI.Server.Controllers
         }
 
         [HttpGet, HttpHeader("Format", "GeoJson")]
-        public async Task<ActionResult<GJSourceResult>> GetGeoJson([FromQuery] GetRoutesQuery query, CancellationToken token)
+        [Produces("application/json")]
+        public async Task<ActionResult<IEnumerable<GJRouteVM>>> GetGeoJson([FromQuery] GetRoutesQuery query, CancellationToken token)
         {
             var result = await Mediator.Send(query, token);
 
-            var gjs = result.Routes
-                .ToGeoJson()
-                .ToArray();
-
-            return Ok(new GJSourceResult(gjs));
-        }
-        [HttpGet, HttpHeader("Format", "GeoJsonQuick")]
-        public async Task<ActionResult<GJSourceResult>> GetGeoJsonQuick([FromQuery] GetRoutesQuery query, CancellationToken token)
-        {
-            var result = await Mediator.Send(query, token);
-
-            var gjs = result.Routes
-                .ToGeoJsonResult()
-                .ToArray();
-
-            return Ok(new GJSourceLineResultVM(gjs));
-        }
-        [HttpGet, HttpHeader("Format", "GeoJsonVM")]
-        public async Task<ActionResult<ICollection<RouteVM>>> GetGeoJsonVM([FromQuery] GetRoutesQuery query, CancellationToken token)
-        {
-            var result = await Mediator.Send(query, token);
-
-            var gjs = result.Routes
+            var models = result.Routes
                 .ToGeoJsonVM()
                 .ToArray();
 
-            return Ok(gjs);
+            return Ok(models);
         }
     }
 }

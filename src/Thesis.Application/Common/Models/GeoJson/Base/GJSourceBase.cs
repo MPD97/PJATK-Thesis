@@ -1,8 +1,11 @@
-﻿namespace Thesis.Application.Common.Models.GeoJson.Base
+﻿using System.Collections;
+
+namespace Thesis.Application.Common.Models.GeoJson.Base
 {
     public abstract class GJSourceBase
     {
-        public string Type { get; set; } = "geojson";
-        public virtual GJDataBase Data { get; set; } 
+        public virtual string Type { get; set; } = "geojson";
+        public virtual GJDataBase Data { get; set; }
     }
+
 }

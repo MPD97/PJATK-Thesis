@@ -20,6 +20,8 @@
     .mapboxgl-canvas {
         left: 0;
     }
+
+
 </style>
 <section class="map_box_container">
     <div id="map" class="mapboxgl-map"></div>
@@ -46,27 +48,14 @@
     }
 
     [JSInvokable("GetRoutesGeoJson")]
-    public async Task<GJSourceLineResult> GetRoutesGeoJson(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal currentZoom)
+    public async Task<string> GetRoutesGeoJson(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal currentZoom)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"api/Route?TopLeftLat={topLeftLat.ToString(CultureInfo.InvariantCulture)}&TopLeftLon={topLeftLon.ToString(CultureInfo.InvariantCulture)}&BottomRightLat={bottomRightLat.ToString(CultureInfo.InvariantCulture)}&BottomRightLon={bottomRightLon.ToString(CultureInfo.InvariantCulture)}");
         request.Headers.Add("Format", "GeoJson");
 
         var httpResponse = await Http.SendAsync(request);
 
-        var result = await httpResponse.Content.ReadFromJsonAsync<GJSourceLineResult>();
-
-        return result;
-    }
-
-    [JSInvokable("GetRoutesGeoJsonQuick")]
-    public async Task<GJSourceLineResultVM> GetRoutesGeoJsonQuick(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal currentZoom)
-    {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"api/Route?TopLeftLat={topLeftLat.ToString(CultureInfo.InvariantCulture)}&TopLeftLon={topLeftLon.ToString(CultureInfo.InvariantCulture)}&BottomRightLat={bottomRightLat.ToString(CultureInfo.InvariantCulture)}&BottomRightLon={bottomRightLon.ToString(CultureInfo.InvariantCulture)}");
-        request.Headers.Add("Format", "GeoJsonQuick");
-
-        var httpResponse = await Http.SendAsync(request);
-
-        var result = await httpResponse.Content.ReadFromJsonAsync<GJSourceLineResultVM>();
+        var result = await httpResponse.Content.ReadAsStringAsync();
 
         return result;
     }

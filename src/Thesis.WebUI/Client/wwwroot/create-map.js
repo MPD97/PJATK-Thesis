@@ -33,4 +33,35 @@ function createMap() {
             new L.Hash(map);
         }, 0);
     }
+    map.on('load', function () {
+        console.log("map-loaded");
+        map.loadImage(
+            'img/marker-green.png',
+            function (error, image) {
+                if (error) throw error;
+                map.addImage('marker-1', image);
+            }
+        );
+        map.loadImage(
+            'img/marker-blue.png',
+            function (error, image) {
+                if (error) throw error;
+                map.addImage('marker-2', image);
+            }
+        );
+        map.loadImage(
+            'img/marker-red.png',
+            function (error, image) {
+                if (error) throw error;
+                map.addImage('marker-3', image);
+            }
+        );
+        map.loadImage(
+            'img/marker-black.png',
+            function (error, image) {
+                if (error) throw error;
+                map.addImage('marker-4', image);
+            }
+        );
+    });
 }

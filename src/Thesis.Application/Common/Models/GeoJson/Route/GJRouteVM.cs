@@ -8,20 +8,20 @@ using Thesis.Domain.Enums;
 
 namespace Thesis.Application.Common.Models.GeoJson.Route
 {
-    public class RouteVM
+    public class GJRouteVM
     {
         public int RouteId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public RouteDifficulty Difficulty { get; set; }
         public int LengthInMeters { get; set; }
-        public GJSourceLine Source { get; set; }
+        public RouteSource Source { get; set; } = new();
 
-        public RouteVM()
+        public GJRouteVM()
         {
 
         }
-        public RouteVM(int routeId, string name, string description, RouteDifficulty difficulty, int lengthInMeters)
+        public GJRouteVM(int routeId, string name, string description, RouteDifficulty difficulty, int lengthInMeters)
         {
             RouteId = routeId;
             Name = name;

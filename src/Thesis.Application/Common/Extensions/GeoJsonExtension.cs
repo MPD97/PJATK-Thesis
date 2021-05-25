@@ -11,68 +11,64 @@ namespace Thesis.Application.Common.Extensions
 {
     public static class GeoJsonExtension
     {
-        
-        public static GJSourceLine ToGeoJson(this RouteDto route)
+
+        public static IEnumerable<RouteData> ToGeoJson(this RouteDto route)
         {
-            var result = new GJSourceLine();
+            var routeLine = new RouteData();
 
             var sortedPoints = route.Points
-                .OrderBy(o => o.Order)
-                .Select(o => new decimal[2] { o.Longitude, o.Latitude })
+                .OrderBy(point => point.Order)
+                .Select(point => new decimal[2] { point.Longitude, point.Latitude })
                 .ToArray();
 
-            result.Data.Geometry.Coordinates = sortedPoints;
+            routeLine.Geometry.Coordinates = sortedPoints;
+            routeLine.Properties = new RouteProperties() { Title = route.Name, Difficulty = route.Difficulty };
+
+            var routeStart = new RouteData();
+
+            var firstPoint = route.Points
+                .Where(point => point.Order == 1)
+                .Select(point => new decimal[2] { point.Longitude, point.Latitude })
+                .First();
+
+            RouteGeometryPoint geometryPoint = new RouteGeometryPoint();
+            geometryPoint.Coordinates = firstPoint;
+            geometryPoint.Type = "Point";
+
+            routeStart.Geometry = geometryPoint;
+            routeStart.Properties = new RouteProperties() { Title = route.Name, Difficulty = route.Difficulty };
+
+            var result = new RouteData[2] { routeLine, routeStart };
+
+            return result;
+        }
+        public static GJRouteVM ToGeoJsonVM(this RouteDto route)
+        {
+            var result = new GJRouteVM(route.Id, route.Name, route.Description, route.Difficulty, route.LengthInMeters);
+
+            result.Source.Data.Features = route.ToGeoJson();
 
             return result;
         }
 
-        public static GJSourceLineResult ToGeoJsonResult(this RouteDto route)
+        public static IEnumerable<RouteData> ToGeoJson(this IEnumerable<RouteDto> routes)
         {
-            var result = new GJSourceLineResult();
-
-            result.SourceId = route.Id;
-
-            result.Source = route.ToGeoJson();
-
-            return result;
-        }
-
-        public static RouteVM ToGeoJsonVM(this RouteDto route)
-        {
-            var result = new RouteVM(route.Id, route.Name, route.Description, route.Difficulty, route.LengthInMeters);
-
-            result.Source = route.ToGeoJson();
-
-            return result;
-        }
-
-        public static IEnumerable<GJSourceLine> ToGeoJson(this IEnumerable<RouteDto> routes)
-        {
-            var result = new List<GJSourceLine>(routes.Count());
+            var result = new List<RouteData>(routes.Count() * 2);
 
             foreach (var route in routes)
             {
-                result.Add(route.ToGeoJson());
+                foreach (var routeData in route.ToGeoJson())
+                {
+                    result.Add(routeData);
+                }
             }
 
             return result;
         }
 
-        public static IEnumerable<GJSourceLineResult> ToGeoJsonResult(this IEnumerable<RouteDto> routes)
+        public static IEnumerable<GJRouteVM> ToGeoJsonVM(this IEnumerable<RouteDto> routes)
         {
-            var result = new List<GJSourceLineResult>(routes.Count());
-
-            foreach (var route in routes)
-            {
-                result.Add(route.ToGeoJsonResult());
-            }
-
-            return result;
-        }
-
-        public static IEnumerable<RouteVM> ToGeoJsonVM(this IEnumerable<RouteDto> routes)
-        {
-            var result = new List<RouteVM>(routes.Count());
+            var result = new List<GJRouteVM>(routes.Count());
 
             foreach (var route in routes)
             {
