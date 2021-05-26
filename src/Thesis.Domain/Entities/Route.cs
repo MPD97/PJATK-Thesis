@@ -7,6 +7,7 @@ using Thesis.Domain.Commons;
 using Thesis.Domain.Enums;
 using Thesis.Domain.Exceptions;
 using Thesis.Domain.Static;
+using static Thesis.Domain.Static.CoordinatesHelper;
 
 namespace Thesis.Domain.Entities
 {
@@ -49,6 +50,70 @@ namespace Thesis.Domain.Entities
             }
         }
         public RouteStatus Status { get; protected set; } = RouteStatus.New;
+
+
+        public decimal TopLeftLatitude
+        {
+            get => topLeftLatitude; set
+            {
+                if (value < LATITUDE_MIN_VALUE)
+                {
+                    throw new DomainLayerException($"Property {nameof(Point)}.{nameof(TopLeftLatitude)} cannot be less than {LATITUDE_MIN_VALUE}.");
+                }
+                if (value > LATITUDE_MAX_VALUE)
+                {
+                    throw new DomainLayerException($"Property {nameof(Point)}.{nameof(TopLeftLatitude)} cannot be bigger than {LATITUDE_MAX_VALUE}.");
+                }
+                topLeftLatitude = value;
+            }
+        }   // N/S
+        public decimal TopLeftLongitude
+        {
+            get => topLeftLongitude; set
+            {
+                if (value < LONGITUDE_MIN_VALUE)
+                {
+                    throw new DomainLayerException($"Property {nameof(Point)}.{nameof(TopLeftLongitude)} cannot be less than {LONGITUDE_MIN_VALUE}.");
+                }
+                if (value > LONGITUDE_MAX_VALUE)
+                {
+                    throw new DomainLayerException($"Property {nameof(Point)}.{nameof(TopLeftLongitude)} cannot be bigger than {LONGITUDE_MAX_VALUE}.");
+                }
+                topLeftLongitude = value;
+            }
+        }  // W/E
+
+        public decimal BottomLeftLatitude
+        {
+            get => bottomLeftLatitude; set
+            {
+                if (value < LATITUDE_MIN_VALUE)
+                {
+                    throw new DomainLayerException($"Property {nameof(Point)}.{nameof(BottomLeftLatitude)} cannot be less than {LATITUDE_MIN_VALUE}.");
+                }
+                if (value > LATITUDE_MAX_VALUE)
+                {
+                    throw new DomainLayerException($"Property {nameof(Point)}.{nameof(BottomLeftLatitude)} cannot be bigger than {LATITUDE_MAX_VALUE}.");
+                }
+                bottomLeftLatitude = value;
+            }
+        }   // N/S
+        public decimal BottomLeftLongitude
+        {
+            get => bottomLeftLongitude; set
+            {
+                if (value < LONGITUDE_MIN_VALUE)
+                {
+                    throw new DomainLayerException($"Property {nameof(Point)}.{nameof(BottomLeftLongitude)} cannot be less than {LONGITUDE_MIN_VALUE}.");
+                }
+                if (value > LONGITUDE_MAX_VALUE)
+                {
+                    throw new DomainLayerException($"Property {nameof(Point)}.{nameof(BottomLeftLongitude)} cannot be bigger than {LONGITUDE_MAX_VALUE}.");
+                }
+                bottomLeftLongitude = value;
+            }
+        }  // W/E
+
         public virtual IList<Point> Points { get; protected set; } = new List<Point>();
         public virtual IList<Run> Runs { get; protected set; } = new List<Run>();
 
@@ -56,9 +121,21 @@ namespace Thesis.Domain.Entities
         public static readonly int NAME_MIN_LENGTH = 4;
 
         public static readonly int DESCRIPTION_MAX_LENGTH = 500;
+
+        public static readonly decimal LATITUDE_MIN_VALUE = -90M;
+        public static readonly decimal LATITUDE_MAX_VALUE = 90M;
+
+        public static readonly decimal LONGITUDE_MIN_VALUE = -180M;
+        public static readonly decimal LONGITUDE_MAX_VALUE = 180M;
+
         private string name;
         private int lengthInMeters;
 
+        private decimal topLeftLatitude;
+        private decimal topLeftLongitude;
+
+        private decimal bottomLeftLatitude;
+        private decimal bottomLeftLongitude;
 
         public Route()
         {
@@ -89,7 +166,13 @@ namespace Thesis.Domain.Entities
 
             if (Points.Count > 1)
             {
-                LengthInMeters += (int)CoordinatesHelper.DistanceBetweenPlaces((double)Points[^2].Latitude, (double)Points[^2].Longitude, (double)Points[^1].Latitude, (double)Points[^1].Longitude);
+                LengthInMeters += (int)DistanceBetweenPlaces((double)Points[^2].Latitude, (double)Points[^2].Longitude, (double)Points[^1].Latitude, (double)Points[^1].Longitude);
+             
+                SetBoundaries(GetBoundaries(TopLeftLatitude, TopLeftLongitude, BottomLeftLatitude, BottomLeftLongitude, latitude, longitude));
+            }
+            else
+            {
+                SetBoundaries(new SquareBoundary(latitude, longitude, latitude, longitude));
             }
         }
         public void ChangeDifficulty(RouteDifficulty difficulty, int userId)
@@ -114,6 +197,14 @@ namespace Thesis.Domain.Entities
             Status = status;
 
             Update(userId);
+        }
+        private void SetBoundaries(SquareBoundary boundary)
+        {
+            TopLeftLatitude = boundary.TopLeftLat;
+            TopLeftLongitude = boundary.TopLeftLon;
+
+            BottomLeftLatitude = boundary.BottomLeftLat;
+            BottomLeftLongitude = boundary.BottomLeftLon;
         }
     }
 }

@@ -1,16 +1,8 @@
 ﻿@page "/map"
-@inject IJSRuntime jSRuntime
 
+@inject IJSRuntime jSRuntime
+@inject HttpClient Http
 <style>
-    /*    @@media screen and (max-width: 640px){
-        #map {
-            position: inherit;
-            top: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-        }
-    }*/
     .mapboxgl-map {
         position: absolute;
         top: 0;
@@ -28,6 +20,11 @@
     .mapboxgl-canvas {
         left: 0;
     }
+
+    .mapboxgl-popup {
+        max-width: 400px;
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    }
 </style>
 <section class="map_box_container">
     <div id="map" class="mapboxgl-map"></div>
@@ -37,9 +34,32 @@
     {
         if (firstRender)
         {
-            await jSRuntime.InvokeVoidAsync("initMap");
+            await jSRuntime.InvokeVoidAsync("createMap");
+
+            await jSRuntime.InvokeVoidAsync("mapHelper.init", DotNetObjectReference.Create(this));
         }
 
         await base.OnAfterRenderAsync(firstRender);
+    }
+
+    [JSInvokable("GetRoutes")]
+    public async Task<GetRoutesVM> GetRoutes(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal currentZoom)
+    {
+        var result = await Http.GetFromJsonAsync<GetRoutesVM>($"api/Route?TopLeftLat={topLeftLat.ToString(CultureInfo.InvariantCulture)}&TopLeftLon={topLeftLon.ToString(CultureInfo.InvariantCulture)}&BottomRightLat={bottomRightLat.ToString(CultureInfo.InvariantCulture)}&BottomRightLon={bottomRightLon.ToString(CultureInfo.InvariantCulture)}");
+
+        return result;
+    }
+
+    [JSInvokable("GetRoutesGeoJson")]
+    public async Task<string> GetRoutesGeoJson(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal currentZoom)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/Route?TopLeftLat={topLeftLat.ToString(CultureInfo.InvariantCulture)}&TopLeftLon={topLeftLon.ToString(CultureInfo.InvariantCulture)}&BottomRightLat={bottomRightLat.ToString(CultureInfo.InvariantCulture)}&BottomRightLon={bottomRightLon.ToString(CultureInfo.InvariantCulture)}");
+        request.Headers.Add("Format", "GeoJson");
+
+        var httpResponse = await Http.SendAsync(request);
+
+        var result = await httpResponse.Content.ReadAsStringAsync();
+
+        return result;
     }
 }

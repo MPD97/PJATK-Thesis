@@ -17,7 +17,7 @@ using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Presistance;
 using Thesis.Infrastructure.Services;
 using Thesis.WebUI.Server.Services;
-
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 namespace Thesis.WebUI.Server
 {
     public class Startup
@@ -37,6 +37,8 @@ namespace Thesis.WebUI.Server
 
             services.AddConfigurations(Configuration);
 
+            services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
             var cs = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<AppDbContext>(options =>
@@ -44,8 +46,6 @@ namespace Thesis.WebUI.Server
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
-
-            services.AddSingleton<ICurrentUserService, CurrentUserService>();
 
             services.AddHttpContextAccessor();
 
@@ -71,8 +71,11 @@ namespace Thesis.WebUI.Server
 
             services.AddInfrastructure();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson();
+
             services.AddRazorPages();
+          
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

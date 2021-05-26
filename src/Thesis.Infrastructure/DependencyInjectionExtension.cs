@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Thesis.Application.Common.Interfaces;
+using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Services;
 
 namespace Thesis.Infrastructure
@@ -16,7 +17,8 @@ namespace Thesis.Infrastructure
             services.AddScoped<ITransaction, Transaction>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
-            services.AddScoped<IDateTime, DateTimeService>();
+            services.AddTransient<IDateTime, DateTimeService>();
+            services.AddTransient<IIdentityService, IdentityService>();
             services.AddScoped<IDataSeederService, DataSeederService>();
 
             return services;
