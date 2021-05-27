@@ -20,11 +20,12 @@ window.mapInitializer = {
                         mapboxgl.setRTLTextPlugin(OSMServerURI + '/mapbox-gl-rtl-text.js');
                         pluginSet = true;
                     }
+                    mapboxgl.accessToken = 'pk.eyJ1IjoibXBkOTciLCJhIjoiY2twNzdheDNiMTM5bTJvczFvb3FvMDZjciJ9.SsZFQE9EsGcgE5l8_etrlw';
                     map = new mapboxgl.Map({
                         container: 'map',
                         center: [21.014, 52.2364],
                         zoom: 10.55,
-                        style: OSMServerURI + '/styles/klokantech-basic/style.json',
+                        style: 'mapbox://styles/mapbox/light-v10',
                         hash: true
                     });
 
