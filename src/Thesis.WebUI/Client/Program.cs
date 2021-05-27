@@ -32,9 +32,9 @@ namespace Thesis.WebUI.Client
             // Supply HttpClient instances that include access tokens when making requests to the server project
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Thesis.WebUI.ServerAPI"));
 
-            builder.Services.AddScoped(sp => new HttpClient{ BaseAddress = new Uri(builder.Configuration["api_base_uri"]) });
+            builder.Services.AddScoped(sp => new HttpClient{ BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            builder.Services.AddHttpClient<IRouteServiceHttp, RestRouteServiceHttp>(fact => fact.BaseAddress = new Uri(builder.Configuration["api_base_uri"]));
+            builder.Services.AddHttpClient<IRouteServiceHttp, RestRouteServiceHttp>(fact => fact.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
             builder.Services.AddApiAuthorization();
 
