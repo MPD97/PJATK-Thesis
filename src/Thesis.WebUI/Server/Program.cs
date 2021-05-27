@@ -21,10 +21,7 @@ namespace Thesis.WebUI.Server
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseKestrel(serverOptions =>
-                    {
-                        serverOptions.Limits.MaxRequestBodySize = 10 * 1024;
-                    });
+                    
                 });
     }
 }

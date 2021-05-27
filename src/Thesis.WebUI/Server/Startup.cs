@@ -71,11 +71,17 @@ namespace Thesis.WebUI.Server
 
             services.AddInfrastructure();
 
+            services.AddCors(o => o.AddPolicy("Client", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
             services.AddControllersWithViews()
                 .AddNewtonsoftJson();
 
             services.AddRazorPages();
-          
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -105,9 +111,12 @@ namespace Thesis.WebUI.Server
 
             app.UseRouting();
 
+            app.UseCors();
+
             app.UseIdentityServer();
             app.UseAuthentication();
             app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {
