@@ -105,7 +105,7 @@ namespace Thesis.WebUI.Server
             dataSeeder.CreateTestUser().Wait();
             dataSeeder.CreateTestRoute().Wait();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 

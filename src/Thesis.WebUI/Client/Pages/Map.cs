@@ -27,20 +27,13 @@ namespace Thesis.WebUI.Client.Pages
         {
             if (firstRender)
             {
-                await _jsRuntime.InvokeVoidAsync("mapInitializer.create", DotNetObjectReference.Create(this));
+                await _jsRuntime.InvokeVoidAsync("createMap");
 
                 await _jsRuntime.InvokeVoidAsync("mapHelper.init", DotNetObjectReference.Create(this));
             }
 
             await base.OnAfterRenderAsync(firstRender);
         }
-
-        [JSInvokable("GetOSMServerAddress")]
-        public string GetOSMServerAddress()
-        {
-            return _configuration["osm_server_base_uri"];
-        }
-
         [JSInvokable("GetRoutes")]
         public async Task<GetRoutesVM> GetRoutes(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal currentZoom)
         {
