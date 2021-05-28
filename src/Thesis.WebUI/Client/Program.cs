@@ -10,7 +10,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Thesis.Application;
-using Thesis.Application.Common.Interfaces;
 using Thesis.Infrastructure;
 using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Presistance;
@@ -35,6 +34,8 @@ namespace Thesis.WebUI.Client
             builder.Services.AddScoped(sp => new HttpClient{ BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             builder.Services.AddHttpClient<IRouteServiceHttp, RestRouteServiceHttp>(fact => fact.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+
+            builder.Services.AddHttpClient<IRunServiceHttp, RestRunServiceHttp>(fact => fact.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
             builder.Services.AddApiAuthorization();
 

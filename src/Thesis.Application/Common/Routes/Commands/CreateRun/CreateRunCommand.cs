@@ -16,6 +16,18 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
         public decimal Latitude { get; init; }
         public decimal Longitude { get; init; }
         public int Accuracy { get; init; }
+
+        public CreateRunCommand()
+        {
+
+        }
+        public CreateRunCommand(int routeId, decimal latitude, decimal longitude, int accuracy)
+        {
+            RouteId = routeId;
+            Latitude = latitude;
+            Longitude = longitude;
+            Accuracy = accuracy;
+        }
     }
 
     public class CreateRunCommandHandler : IRequestHandler<CreateRunCommand, RunDto>

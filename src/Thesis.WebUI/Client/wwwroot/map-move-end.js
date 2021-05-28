@@ -4,8 +4,13 @@ const geolocationOptions = {
     timeout: 5000,
     maximumAge: 250
 };
+let current_accuracy = undefined;
+let current_latitude = undefined;
+let current_longitude = undefined;
+let dotnetHelper = undefined;
 window.mapHelper = {
     init: dotnetHelper => {
+        dotnetHelper = dotnetHelper;
         let lastTL = [];
         let lastBR = [];
         let sources = [];
@@ -36,7 +41,7 @@ window.mapHelper = {
                     json = JSON.parse(json);
                     $.each(json, function (index, result) {
 
-                        const routeId = 'route-' + result.routeId;
+                        const routeId = /*'route-' + */result.routeId.toString();
 
                         if (jQuery.inArray(routeId, sources) !== -1) {
                             return;
@@ -112,7 +117,7 @@ window.mapHelper = {
 
             var coordinates = e.features[0].geometry.coordinates.slice();
             var routeName = e.features[0].properties.title;
-            var source = e.features[0].source;
+            var source = e.features[0].source.toString();
 
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
@@ -171,9 +176,10 @@ window.mapHelper = {
                     var crd = position.coords;
 
                     let playBtnEle = $("#play-" + source);
-                    var lat = position.coords.latitude;
-                    var long = position.coords.longitude;
-                    var distance = CalculateDistance(coordinates[1], coordinates[0], lat, long);
+                    current_accuracy = crd.accuracy;
+                    current_latitude = position.coords.latitude;
+                    current_longitude = position.coords.longitude;
+                    var distance = CalculateDistance(coordinates[1], coordinates[0], current_latitude, current_longitude);
                     console.log("Distance: " + distance);
 
                     let distanceEle = $("#distance-" + source);
@@ -183,21 +189,21 @@ window.mapHelper = {
                         distanceEle.text(`Odległość: > 150 km`);
                     }
                     else if (distance > 1000) {
-                        distanceEle.text(`Odległość: ${(distance / 1000).toFixed(1)}} km`);
+                        distanceEle.text(`Odległość: ${(distance / 1000).toFixed(1)} km`);
                     }
                     else {
                         distanceEle.text(`Odległość: ${distance.toFixed(0)} metrów`);
                     }
 
 
-                    if (crd.accuracy.toFixed(0) > 10000) {
+                    if (current_accuracy.toFixed(0) > 10000) {
                         accuracyEle.text(`Dokładność: > 10 km`);
                     }
-                    else if (crd.accuracy.toFixed(0) > 1000) {
-                        accuracyEle.text(`Dokładność: ${(crd.accuracy / 1000).toFixed(1)} km`);
+                    else if (current_accuracy.toFixed(0) > 1000) {
+                        accuracyEle.text(`Dokładność: ${(current_accuracy / 1000).toFixed(1)} km`);
                     }
                     else {
-                        accuracyEle.text(`Dokładność: ${crd.accuracy.toFixed(0)} metrów`);
+                        accuracyEle.text(`Dokładność: ${current_accuracy.toFixed(0)} metrów`);
                     }
 
                     let infoEle = $("#info-" + source)
@@ -209,7 +215,7 @@ window.mapHelper = {
                         playBtnEle.text("Jesteś zbyt daleko");
                         playBtnEle.prop('disabled', true);
                     }
-                    else if (crd.accuracy > 30) {
+                    else if (crd.accuracy > 150) {
                         playBtnEle.removeClass("btn-danger");
                         playBtnEle.removeClass("btn-success");
                         playBtnEle.addClass("btn-warning");
@@ -234,6 +240,13 @@ window.mapHelper = {
                 window.navigator.geolocation.clearWatch(geolocation);
             });
 
+            $("#play-" + source).on('click', function () {
+                console.log("playBtn click");
+                dotnetHelper.invokeMethodAsync('CreateRun', parseInt(source), current_latitude, current_longitude, current_accuracy)
+                    .then(json => {
+                        console.log(json);
+                    });
+            })
             function error(err) {
                 console.warn(`ERROR(${err.code}): ${err.message}`);
 
