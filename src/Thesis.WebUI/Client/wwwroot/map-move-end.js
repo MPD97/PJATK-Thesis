@@ -202,14 +202,14 @@ window.mapHelper = {
 
                     let infoEle = $("#info-" + source)
 
-                    if (distance > 50) {
+                    if (distance > 10) {
                         playBtnEle.removeClass("btn-warning");
                         playBtnEle.removeClass("btn-success");
                         playBtnEle.addClass("btn-danger");
                         playBtnEle.text("Jesteś zbyt daleko");
                         playBtnEle.prop('disabled', true);
                     }
-                    else if (crd.accuracy > 150) {
+                    else if (crd.accuracy > 30) {
                         playBtnEle.removeClass("btn-danger");
                         playBtnEle.removeClass("btn-success");
                         playBtnEle.addClass("btn-warning");

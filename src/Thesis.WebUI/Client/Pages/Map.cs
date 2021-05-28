@@ -20,9 +20,7 @@ namespace Thesis.WebUI.Client.Pages
 
         [Inject]
         private IRouteServiceHttp _service { get; set; }
-        
-        [Inject]
-        private IConfiguration _configuration { get; set; }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
@@ -33,11 +31,6 @@ namespace Thesis.WebUI.Client.Pages
             }
 
             await base.OnAfterRenderAsync(firstRender);
-        }
-        [JSInvokable("GetRoutes")]
-        public async Task<GetRoutesVM> GetRoutes(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal currentZoom)
-        {
-            return await _service.GetRoutes(topLeftLat, topLeftLon, bottomRightLat, bottomRightLon, 50);
         }
 
         [JSInvokable("GetRoutesGeoJson")]
