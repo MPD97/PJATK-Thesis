@@ -27,28 +27,17 @@ namespace Thesis.Application.Common.Routes.Queries.GetRoutes
     public class GetRoutesQueryHandler : IRequestHandler<GetRoutesQuery, GetRoutesVM>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Route> _repository;
+        private readonly IRouteService _routeService;
 
-        public GetRoutesQueryHandler(IMapper mapper, IRepository<Route> repository)
+        public GetRoutesQueryHandler(IMapper mapper, IRouteService routeService)
         {
             _mapper = mapper;
-            _repository = repository;
+            _routeService = routeService;
         }
 
         public async Task<GetRoutesVM> Handle(GetRoutesQuery request, CancellationToken cancellationToken)
         {
-            var routes = _repository
-                 .GetAll()
-                 .AsNoTracking()
-                 .Include(x => x.Points)
-                 .Where(r => r.Status == RouteStatus.Accepted)
-                 .Where(r => request.TopLeftLat >= r.TopLeftLatitude)
-                 .Where(r => request.TopLeftLon <= r.TopLeftLongitude)
-                 .Where(r => request.BottomRightLat <= r.BottomLeftLatitude)
-                 .Where(r => request.BottomRightLon >= r.BottomLeftLongitude)
-                 .Take(request.Amount);
-
-            var c = routes.ToArray();
+            var routes = _routeService.GetRoutesInBoundaries(request.TopLeftLat, request.TopLeftLon, request.BottomRightLat, request.BottomRightLon, request.Amount);
 
             var dtos = await _mapper.ProjectTo<RouteDto>(routes)
                 .ToListAsync(cancellationToken);

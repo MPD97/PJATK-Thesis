@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="Common\Routes\Commands\" />
+    <Folder Include="Common\Runs\Queries\" />
   </ItemGroup>
 
 </Project>

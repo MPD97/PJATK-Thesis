@@ -21,6 +21,10 @@ namespace Thesis.Infrastructure
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddScoped<IDataSeederService, DataSeederService>();
 
+            services.AddScoped<IRouteService, DbRouteService>();
+            services.AddScoped<IRunService, DbRunService>();
+
+
             return services;
         }
     }
