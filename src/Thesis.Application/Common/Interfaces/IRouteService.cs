@@ -10,5 +10,7 @@ namespace Thesis.Application.Common.Interfaces
     public interface IRouteService
     {
         IQueryable<Route> GetRoutesInBoundaries(decimal topLeftLat, decimal topLefrLon, decimal bottomRightLat, decimal bottomRightLon, int take = 50);
+
+        Task<Run> CreateRun(int routeId, int userId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Thesis.Domain.Entities;
 
@@ -11,7 +12,7 @@ namespace Thesis.Application.Common.Interfaces
 
         Task<Run> GetActiveRun(int routeId, int userId);
 
-        Task<Run> CreateRun(int routeId, int userId);
+        Task<Run> GetActiveRun(int userId);
 
         Task<Run> CompleteRun(int routeId, int userId);
     }

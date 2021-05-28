@@ -23,7 +23,7 @@ namespace Thesis.Infrastructure
 
             services.AddScoped<IRouteService, DbRouteService>();
             services.AddScoped<IRunService, DbRunService>();
-
+            services.AddScoped<IPointService, DbPointService>();
 
             return services;
         }

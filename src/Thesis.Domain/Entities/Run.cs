@@ -18,5 +18,17 @@ namespace Thesis.Domain.Entities
 
         public virtual Route Route { get; set; }
         public virtual IList<CompletedPoints> CompletedPoints { get; set; }
+
+        public Run()
+        {
+
+        }
+
+        public Run(int userId, RunStatus status, DateTime startTime)
+        {
+            UserId = userId;
+            Status = status;
+            StartTime = startTime;
+        }
     }
 }

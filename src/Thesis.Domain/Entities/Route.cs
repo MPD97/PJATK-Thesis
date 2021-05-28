@@ -198,6 +198,16 @@ namespace Thesis.Domain.Entities
 
             Update(userId);
         }
+
+        public Run CreateRun(int userId, DateTime startDate)
+        {
+            var run = new Run(userId, RunStatus.InProgress, startDate);
+            
+            Runs.Add(run);
+
+            return run;
+        }
+
         private void SetBoundaries(SquareBoundary boundary)
         {
             TopLeftLatitude = boundary.TopLeftLat;
