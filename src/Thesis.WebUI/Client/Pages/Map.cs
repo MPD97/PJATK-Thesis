@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Thesis.Application.Common.Models;
 using Thesis.Application.Common.Routes.Commands.CreateRun;
 using Thesis.Application.Common.Routes.Queries.GetRoutes;
 using Thesis.WebUI.Client.DataServices;
@@ -56,7 +57,7 @@ namespace Thesis.WebUI.Client.Pages
         }
 
         [JSInvokable("CreateRun")]
-        public async Task<RunDto> CreateRun(int routeId, decimal latitude, decimal longitude, int accuracy)
+        public async Task<ApiResult<RunDto>> CreateRun(int routeId, decimal latitude, decimal longitude, int accuracy)
         {
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;

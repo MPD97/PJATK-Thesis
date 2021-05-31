@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using System;
 using Thesis.Application.Common.Mappings;
 using Thesis.Domain.Entities;

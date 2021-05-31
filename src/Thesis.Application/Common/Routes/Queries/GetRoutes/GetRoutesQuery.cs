@@ -37,6 +37,7 @@ namespace Thesis.Application.Common.Routes.Queries.GetRoutes
 
         public async Task<GetRoutesVM> Handle(GetRoutesQuery request, CancellationToken cancellationToken)
         {
+            //TODO: PipelineValidation
             var routes = _routeService.GetRoutesInBoundaries(request.TopLeftLat, request.TopLeftLon, request.BottomRightLat, request.BottomRightLon, request.Amount);
 
             var dtos = await _mapper.ProjectTo<RouteDto>(routes)

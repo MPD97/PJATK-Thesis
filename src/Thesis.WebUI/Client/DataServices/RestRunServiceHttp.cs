@@ -9,6 +9,7 @@ using Blazored.LocalStorage;
 using System.Net.Http.Headers;
 using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Thesis.Application.Common.Models;
 
 namespace Thesis.WebUI.Client.DataServices
 {
@@ -23,7 +24,7 @@ namespace Thesis.WebUI.Client.DataServices
             _tokenProvider = tokenProvider;
         }
 
-        public async Task<RunDto> CreateRun(int routeId, decimal latitude, decimal longitude, int accuracy)
+        public async Task<ApiResult<RunDto>> CreateRun(int routeId, decimal latitude, decimal longitude, int accuracy)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, $"api/Run");
 
@@ -38,13 +39,14 @@ namespace Thesis.WebUI.Client.DataServices
             {
                 return null;
             }
-
             _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token.Value);
+
+
             var httpResponse = await _http.SendAsync(request);
 
-            var result = await httpResponse.Content.ReadFromJsonAsync<RunDto>();
+            var result = await httpResponse.Content.ReadFromJsonAsync<ApiResult<RunDto>>();
 
-            return new RunDto();
+            return result;
         }
     }
 }

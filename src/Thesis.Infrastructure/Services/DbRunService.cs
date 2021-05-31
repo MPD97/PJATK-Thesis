@@ -13,13 +13,24 @@ namespace Thesis.Infrastructure.Services
     public class DbRunService : IRunService
     {
 
-        private readonly IRepository<Run> _repository;
+        private readonly IRepository<Run> _runRepository;
+        private readonly IRepository<CompletedPoint> _completedPointsRepository;
         private readonly IDateTime _date;
 
-        public DbRunService(IRepository<Run> repository, IDateTime date)
+        public DbRunService(IRepository<Run> runRepository, IDateTime date, IRepository<CompletedPoint> completedPointsRepository)
         {
-            _repository = repository;
+            _runRepository = runRepository;
             _date = date;
+            _completedPointsRepository = completedPointsRepository;
+        }
+
+        public async Task<CompletedPoint> CompletePoint(Run run, Point point)
+        {
+            var completedPoint = run.CompletePoint(point, _date.Now);
+
+            await _completedPointsRepository.AddAsync(completedPoint);
+
+            return completedPoint;
         }
 
         public Task<Run> CompleteRun(int routeId, int userId)
@@ -29,7 +40,7 @@ namespace Thesis.Infrastructure.Services
 
         public async Task<Run> GetActiveRun(int routeId, int userId)
         {
-            var run = await _repository
+            var run = await _runRepository
                 .GetAll()
                 .AsNoTracking()
                 .Where(r => r.RouteId == routeId)
@@ -42,7 +53,7 @@ namespace Thesis.Infrastructure.Services
 
         public async Task<Run> GetActiveRun(int userId)
         {
-            var run = await _repository
+            var run = await _runRepository
                 .FindBy(r => r.UserId == userId)
                 .AsNoTracking()
                 .Where(r => r.Status == RunStatus.InProgress)
@@ -53,7 +64,7 @@ namespace Thesis.Infrastructure.Services
 
         public async Task<Run> GetRun(int runId)
         {
-            var run = await _repository
+            var run = await _runRepository
                 .GetAll()
                 .AsNoTracking()
                 .Where(r => r.Id == runId)
@@ -64,7 +75,7 @@ namespace Thesis.Infrastructure.Services
 
         public async Task<IReadOnlyList<Run>> GetUserRuns(int userId)
         {
-            var runs = await _repository
+            var runs = await _runRepository
                 .GetAll()
                 .AsNoTracking()
                 .Where(r => r.UserId == userId)
