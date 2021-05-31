@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Threading;
 using System.Threading.Tasks;
+using Thesis.Application.Common.Configurations;
 using Thesis.Application.Common.Interfaces;
 using Thesis.Domain.Static;
 
@@ -9,19 +11,17 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
 {
     public class CreateRunCommandValidator : AbstractValidator<CreateRunCommand>
     {
-        private const int MaxDistance = 10;
-        private const int MaxAccuracy = 25;
         private readonly IRunService _runService;
         private readonly IPointService _pointService;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IConfiguration _configuration;
+        private readonly ApplicationConfiguration _configuration;
 
-        public CreateRunCommandValidator(IRunService runService, IPointService pointService, ICurrentUserService currentUserService, IConfiguration configuration)
+        public CreateRunCommandValidator(IRunService runService, IPointService pointService, ICurrentUserService currentUserService, IOptions<ApplicationConfiguration> configuration)
         {
             _runService = runService;
             _pointService = pointService;
             _currentUserService = currentUserService;
-            _configuration = configuration;
+            _configuration = configuration.Value;
 
             RuleFor(v => v.RouteId)
                 .GreaterThanOrEqualTo(1)
@@ -33,7 +33,7 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
 
             RuleFor(v => v.Accuracy)
                 .GreaterThanOrEqualTo(0)
-                .WithMessage("Accuracy cannot be less than 0.");
+                .WithMessage($"Accuracy cannot be negative.");
 
             RuleFor(v => v.Latitude)
                .Must(BeValidLatitude)
@@ -45,11 +45,11 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
 
             RuleFor(v => new { v.RouteId, v.Latitude, v.Longitude })
                .MustAsync(async (x, cancellation) => await BeInValidDistance(x.RouteId, x.Latitude, x.Longitude, cancellation))
-               .WithMessage($"You are too far from starting point. Max distance is {MaxDistance} meters. Come a little bit closer and start again.");
+               .WithMessage($"You are too far from starting point. Max distance is {_configuration.MaxDistance} meters. Come a little bit closer and start again.");
 
             RuleFor(v =>v.Accuracy)
                .Must(BeInGoodAccuracy)
-               .WithMessage($"Your GPS signal is to weak. Try again later.");
+               .WithMessage($"Your GPS signal is to weak. Accuracy must be less or equal than {_configuration.MaxAccuracy} meters. Try again later.");
         }
 
         private async Task<bool> BeNotInRunAlready(int routeId, CancellationToken cancellationToken)
@@ -78,7 +78,7 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
 
             var distance = (int)CoordinatesHelper.DistanceBetweenPlaces((double)latitude, (double)longitude, (double)point.Latitude, (double)point.Longitude);
 
-            if (distance > MaxDistance)
+            if (distance > _configuration.MaxDistance)
             {
                 return false;
             }
@@ -88,7 +88,7 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
 
         private bool BeInGoodAccuracy(int accuracy)
         {
-            return accuracy < MaxAccuracy;
+            return accuracy <= _configuration.MaxAccuracy;
         }
     }
 }

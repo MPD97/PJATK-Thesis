@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.JSInterop;
 using System;
@@ -7,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Thesis.Application.Common.Routes.Commands.CreateRun;
 using Thesis.Application.Common.Routes.Queries.GetRoutes;
@@ -24,6 +27,15 @@ namespace Thesis.WebUI.Client.Pages
 
         [Inject]
         private IRunServiceHttp _runService { get; set; }
+
+        [Inject]
+        private AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+
+        [Inject]
+        private NavigationManager UriHelper { get; set; }
+
+        [Inject]
+        private NavigationManager NavManager { get; set; }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -46,7 +58,18 @@ namespace Thesis.WebUI.Client.Pages
         [JSInvokable("CreateRun")]
         public async Task<RunDto> CreateRun(int routeId, decimal latitude, decimal longitude, int accuracy)
         {
-            return await _runService.CreateRun(routeId, latitude, longitude, accuracy);
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity.IsAuthenticated)
+            {
+                return await _runService.CreateRun(routeId, latitude, longitude, accuracy);
+            }
+            else
+            {
+                NavManager.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(NavManager.Uri)}");
+                return null;
+            }
         }
     }
 }

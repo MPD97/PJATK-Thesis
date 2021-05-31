@@ -18,6 +18,9 @@ using Thesis.Infrastructure.Presistance;
 using Thesis.Infrastructure.Services;
 using Thesis.WebUI.Server.Services;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using Thesis.Application.Common.Behaviours;
+using Thesis.Application.Common.Extensions;
+
 namespace Thesis.WebUI.Server
 {
     public class Startup
@@ -87,6 +90,7 @@ namespace Thesis.WebUI.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDataSeederService dataSeeder, AppDbContext context)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -99,6 +103,8 @@ namespace Thesis.WebUI.Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseErrorHandlingMiddleware();
+
             context.Database.EnsureCreated();
             context.Database.Migrate();
 
@@ -124,6 +130,7 @@ namespace Thesis.WebUI.Server
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");
             });
+
         }
     }
 }
