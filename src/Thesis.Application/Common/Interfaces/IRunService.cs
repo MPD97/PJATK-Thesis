@@ -7,6 +7,7 @@ namespace Thesis.Application.Common.Interfaces
 {
     public interface IRunService
     {
+        Task<CompletedPoint> CompletePoint(Run run, Point point);
         Task<Run> GetRun(int runId);
         Task<IReadOnlyList<Run>> GetUserRuns(int userId);
 

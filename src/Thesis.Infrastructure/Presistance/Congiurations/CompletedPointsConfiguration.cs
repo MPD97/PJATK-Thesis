@@ -4,9 +4,9 @@ using Thesis.Domain.Entities;
 
 namespace Thesis.Infrastructure.Presistance.Congiurations
 {
-    public class CompletedPointsConfiguration : IEntityTypeConfiguration<CompletedPoints>
+    public class CompletedPointsConfiguration : IEntityTypeConfiguration<CompletedPoint>
     {
-        public void Configure(EntityTypeBuilder<CompletedPoints> builder)
+        public void Configure(EntityTypeBuilder<CompletedPoint> builder)
         {
             builder.HasKey(cp => cp.Id);
         }

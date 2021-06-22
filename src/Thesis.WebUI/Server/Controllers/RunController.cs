@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
+using Thesis.Application.Common.Models;
 using Thesis.Application.Common.Routes.Commands.CreateRun;
 
 namespace Thesis.WebUI.Server.Controllers
@@ -10,11 +11,11 @@ namespace Thesis.WebUI.Server.Controllers
     public class RunController : ApiControllerBase
     {
         [HttpPost]
-        public async Task<ActionResult<RunDto>> CreateRun(CreateRunCommand command, CancellationToken token)
+        public async Task<ActionResult<ApiResult<RunDto>>> CreateRun(CreateRunCommand command, CancellationToken token)
         {
             var result = await Mediator.Send(command, token);
 
-            return Ok(result);
+            return Ok(ApiResult<RunDto>.Success(result));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Thesis.Application.Common.Interfaces;
@@ -13,6 +14,18 @@ namespace Thesis.Infrastructure.Services
         public DbPointService(IRepository<Point> repository)
         {
             _repository = repository;
+        }
+
+        public async Task<ICollection<Point>> GetRoutePoints(int routeId)
+        {
+            var points = await _repository
+                .GetAll()
+                .AsNoTracking()
+                .Where(p => p.Id == routeId)
+                .OrderBy(x => x.Order)
+                .ToArrayAsync();
+
+            return points;
         }
 
         public async Task<Point> GetPoint(int routeId, int pointOrder)

@@ -15,6 +15,8 @@ using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Presistance;
 using Microsoft.AspNetCore.Identity;
 using Thesis.WebUI.Client.DataServices;
+using Blazored.LocalStorage;
+using Blazored.SessionStorage;
 
 namespace Thesis.WebUI.Client
 {
@@ -36,7 +38,9 @@ namespace Thesis.WebUI.Client
             builder.Services.AddHttpClient<IRouteServiceHttp, RestRouteServiceHttp>(fact => fact.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
             builder.Services.AddHttpClient<IRunServiceHttp, RestRunServiceHttp>(fact => fact.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-
+            
+            builder.Services.AddBlazoredSessionStorage();
+            builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddApiAuthorization();
 
             await builder.Build().RunAsync();

@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Thesis.Application.Common.Interfaces;
+using Thesis.Domain.Entities;
+using Thesis.Domain.Exceptions;
 
 namespace Thesis.Application.Common.Routes.Commands.CreateRun
 {
@@ -33,14 +35,24 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
     public class CreateRunCommandHandler : IRequestHandler<CreateRunCommand, RunDto>
     {
         private readonly IMapper _mapper;
+        private readonly IRepository<Run> _repository;
+
         private readonly IRouteService _routeService;
+        private readonly IPointService _pointService;
+        private readonly IRunService _runService;
+
         private readonly ICurrentUserService _currentUserService;
 
-        public CreateRunCommandHandler(IMapper mapper, IRouteService routeService, ICurrentUserService currentUserService)
+        public CreateRunCommandHandler(IMapper mapper, IRouteService routeService,
+            ICurrentUserService currentUserService, IPointService pointService,
+            IRepository<Run> repository, IRunService runService)
         {
             _mapper = mapper;
             _routeService = routeService;
             _currentUserService = currentUserService;
+            _pointService = pointService;
+            _repository = repository;
+            _runService = runService;
         }
 
         public async Task<RunDto> Handle(CreateRunCommand request, CancellationToken cancellationToken)
@@ -50,7 +62,6 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
             var run = await _routeService.CreateRun(request.RouteId, userId);
 
             var result = _mapper.Map<RunDto>(run);
-
             return result;
         }
     }

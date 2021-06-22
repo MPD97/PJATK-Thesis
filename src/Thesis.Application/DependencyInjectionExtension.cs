@@ -33,7 +33,7 @@ namespace Thesis.Application
         }
         public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
-            var mapConfiguration = OptionRegisterExtension.RegisterExtensionOptions<MapConfiguration>(services, configuration, "Map");
+            var applicationConfiguration = OptionRegisterExtension.RegisterExtensionOptions<ApplicationConfiguration>(services, configuration, "ApplicationConfiguration");
 
             return services;
         }

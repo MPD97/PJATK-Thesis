@@ -242,9 +242,29 @@ window.mapHelper = {
 
             $("#play-" + source).on('click', function () {
                 console.log("playBtn click");
+
+                let playButton = $("#play-" + source);
+                let infoButton = $("#info-" + source);
+                infoButton.text('');
+
+                playButton.prop('disabled', true);
+                var textLast = playButton.text();
+                playButton.text("Rozpoczynanie");
+
                 dotnetHelper.invokeMethodAsync('CreateRun', parseInt(source), current_latitude, current_longitude, current_accuracy)
                     .then(json => {
+
+                        playButton.text(textLast);
+                        playButton.prop('disabled', false);
+
                         console.log(json);
+                        if (json.isSuccess === false) {
+                            infoButton.text(json.message);
+                            return false;
+
+                        } else {
+                            //Draw Route
+                        }
                     });
             })
             function error(err) {
