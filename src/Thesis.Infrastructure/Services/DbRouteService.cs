@@ -54,12 +54,22 @@ namespace Thesis.Infrastructure.Services
             }
         }
 
+        public IQueryable<Route> GetRouteById(int routeId)
+        {
+            var route = _routeRepository
+                .FindBy(r => r.Id == routeId)
+                .AsNoTracking()
+                .Include(r => r.Points);
+
+            return route;
+        }
+
         public IQueryable<Route> GetRoutesInBoundaries(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, int take = 50)
         {
             var routes = _routeRepository
                 .GetAll()
                 .AsNoTracking()
-                .Include(x => x.Points)
+                .Include(r => r.Points)
                 .Where(r => r.Status == RouteStatus.Accepted)
                 .Where(r => topLeftLat >= r.TopLeftLatitude)
                 .Where(r => topLeftLon <= r.TopLeftLongitude)

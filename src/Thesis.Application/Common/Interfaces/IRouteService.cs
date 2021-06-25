@@ -11,6 +11,8 @@ namespace Thesis.Application.Common.Interfaces
     {
         IQueryable<Route> GetRoutesInBoundaries(decimal topLeftLat, decimal topLefrLon, decimal bottomRightLat, decimal bottomRightLon, int take = 50);
 
+        IQueryable<Route> GetRouteById(int routeId);
+
         Task<Run> CreateRun(int routeId, int userId);
     }
 }

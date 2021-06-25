@@ -77,5 +77,6 @@ namespace Thesis.Application.Common.Extensions
 
             return result;
         }
+ 
     }
 }
