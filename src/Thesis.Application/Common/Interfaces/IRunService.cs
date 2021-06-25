@@ -15,6 +15,8 @@ namespace Thesis.Application.Common.Interfaces
 
         Task<Run> GetActiveRun(int userId);
 
+        Task<Run> CancelRun(Run run);
+
         Task<Run> CompleteRun(int routeId, int userId);
     }
 }

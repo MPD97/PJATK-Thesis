@@ -5,8 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Thesis.Application.Common.Extensions;
-using Thesis.Application.Common.Models.GeoJson.Base;
-using Thesis.Application.Common.Models.GeoJson.Line;
 using Thesis.Application.Common.Models.GeoJson.Route;
 using Thesis.Application.Common.Routes.Queries.GetRoutes;
 using Thesis.WebUI.Server.Attributes;

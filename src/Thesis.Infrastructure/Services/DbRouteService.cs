@@ -1,29 +1,22 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Thesis.Application.Common.Interfaces;
 using Thesis.Domain.Entities;
 using Thesis.Domain.Enums;
 using Thesis.Domain.Exceptions;
-using Thesis.Infrastructure.Identity;
 
 namespace Thesis.Infrastructure.Services
 {
     public class DbRouteService : IRouteService
     {
         private readonly IRepository<Route> _routeRepository;
-        private readonly IRepository<Run> _runRepository;
-
         private readonly IDateTime _dateTime;
 
-        public DbRouteService(IRepository<Route> routeRepository, IRepository<Run> runRepository, IDateTime dateTime)
+        public DbRouteService(IRepository<Route> routeRepository, IDateTime dateTime)
         {
             _routeRepository = routeRepository;
-            _runRepository = runRepository;
             _dateTime = dateTime;
         }
 
@@ -35,7 +28,7 @@ namespace Thesis.Infrastructure.Services
                 .Include(r => r.Points)
                 .FirstOrDefaultAsync();
 
-            if (route == null)
+            if (route is null)
             {
                 //TODO: PipelineValidation
                 throw new Exception($"Route with id: {routeId} not exists or is not accepted.");

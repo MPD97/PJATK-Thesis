@@ -27,9 +27,9 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
                 .GreaterThanOrEqualTo(1)
                 .WithMessage("RouteId must be greater than or equal 1");
 
-            RuleFor(v => v.RouteId)
-                .MustAsync(BeNotInRunAlready)
-                .WithMessage("You are already in run. Complete previus run before taking another.");
+            //RuleFor(v => v.RouteId)
+            //    .MustAsync(BeNotInRunAlready)
+            //    .WithMessage("You are already in run. Complete previus run before taking another.");
 
             RuleFor(v => v.Accuracy)
                 .GreaterThanOrEqualTo(0)
@@ -52,10 +52,10 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
                .WithMessage($"Your GPS signal is to weak. Accuracy must be less or equal than {_configuration.MaxAccuracy} meters. Try again later.");
         }
 
-        private async Task<bool> BeNotInRunAlready(int routeId, CancellationToken cancellationToken)
-        {
-            return await _runService.GetActiveRun(int.Parse(_currentUserService.UserId)) is null;
-        }
+        //private async Task<bool> BeNotInRunAlready(int routeId, CancellationToken cancellationToken)
+        //{
+        //    return await _runService.GetActiveRun(int.Parse(_currentUserService.UserId)) is null;
+        //}
 
         private bool BeValidLatitude(decimal latitude)
         {

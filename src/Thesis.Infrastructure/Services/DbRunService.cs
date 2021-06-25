@@ -24,6 +24,17 @@ namespace Thesis.Infrastructure.Services
             _completedPointsRepository = completedPointsRepository;
         }
 
+        public async Task<Run> CancelRun(Run run)
+        {
+            run.Status = RunStatus.Canceled;
+            run.EndTime = null;
+
+            await _runRepository.UpdateAsync(run);
+            await _runRepository.SaveChangesAsync();
+
+            return run;
+        }
+
         public async Task<CompletedPoint> CompletePoint(Run run, Point point)
         {
             var completedPoint = run.CompletePoint(point, _date.Now);

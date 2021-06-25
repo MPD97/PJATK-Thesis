@@ -1,24 +1,17 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Thesis.Application;
 using Thesis.Application.Common.Interfaces;
 using Thesis.Infrastructure;
 using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Presistance;
-using Thesis.Infrastructure.Services;
 using Thesis.WebUI.Server.Services;
-using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
-using Thesis.Application.Common.Behaviours;
 using Thesis.Application.Common.Extensions;
 
 namespace Thesis.WebUI.Server
@@ -105,7 +98,6 @@ namespace Thesis.WebUI.Server
             }
             app.UseErrorHandlingMiddleware();
 
-            context.Database.EnsureCreated();
             context.Database.Migrate();
 
             dataSeeder.CreateTestUser().Wait();

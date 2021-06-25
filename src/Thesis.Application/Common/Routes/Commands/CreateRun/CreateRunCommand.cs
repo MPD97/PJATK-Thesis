@@ -1,14 +1,8 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Thesis.Application.Common.Interfaces;
-using Thesis.Domain.Entities;
-using Thesis.Domain.Exceptions;
 
 namespace Thesis.Application.Common.Routes.Commands.CreateRun
 {
@@ -35,29 +29,28 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
     public class CreateRunCommandHandler : IRequestHandler<CreateRunCommand, RunDto>
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Run> _repository;
-
         private readonly IRouteService _routeService;
-        private readonly IPointService _pointService;
         private readonly IRunService _runService;
-
         private readonly ICurrentUserService _currentUserService;
 
-        public CreateRunCommandHandler(IMapper mapper, IRouteService routeService,
-            ICurrentUserService currentUserService, IPointService pointService,
-            IRepository<Run> repository, IRunService runService)
+        public CreateRunCommandHandler(IMapper mapper, IRouteService routeService, IRunService runService, ICurrentUserService currentUserService)
         {
             _mapper = mapper;
             _routeService = routeService;
-            _currentUserService = currentUserService;
-            _pointService = pointService;
-            _repository = repository;
             _runService = runService;
+            _currentUserService = currentUserService;
         }
 
         public async Task<RunDto> Handle(CreateRunCommand request, CancellationToken cancellationToken)
         {
             var userId = int.Parse(_currentUserService.UserId);
+
+            var activeRun = await _runService.GetActiveRun(userId);
+
+            if (activeRun is not null)
+            {
+                await _runService.CancelRun(activeRun);
+            }
 
             var run = await _routeService.CreateRun(request.RouteId, userId);
 
