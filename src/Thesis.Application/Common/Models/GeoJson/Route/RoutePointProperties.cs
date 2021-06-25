@@ -3,9 +3,16 @@ using Thesis.Domain.Enums;
 
 namespace Thesis.Application.Common.Models.GeoJson.Route
 {
-    public class RouteProperties : GJPropertiesBase
+
+    public class RouteLineProperties : GJPropertiesBase
     {
         public RoutePointType Type { get; set; }
+        public int RouteId { get; set; }
+    }
+    public class RoutePointProperties : GJPropertiesBase
+    {
+        public RoutePointType Type { get; set; }
+        public int Order { get; set; }
     }
     public enum RoutePointType 
     {

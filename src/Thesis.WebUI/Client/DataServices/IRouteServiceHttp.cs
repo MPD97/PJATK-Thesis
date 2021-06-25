@@ -10,5 +10,8 @@ namespace Thesis.WebUI.Client.DataServices
         public Task<GetRoutesVM> GetRoutes(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal amount);
 
         public Task<string> GetRoutesGeoJson(decimal topLeftLat, decimal topLeftLon, decimal bottomRightLat, decimal bottomRightLon, decimal amount);
+
+        public Task<string> GetRouteGeoJson(int routeId);
+
     }
 }

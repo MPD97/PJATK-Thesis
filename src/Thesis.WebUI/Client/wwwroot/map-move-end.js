@@ -8,14 +8,17 @@ let current_accuracy = undefined;
 let current_latitude = undefined;
 let current_longitude = undefined;
 let dotnetHelper = undefined;
+
 window.mapHelper = {
     init: dotnetHelper => {
         dotnetHelper = dotnetHelper;
+
         let lastTL = [];
         let lastBR = [];
+
         let sources = [];
-        let layers = [];
-        let sourcesCount = 0;
+        let routelayers = [];
+        let runlayers = [];
 
         map.on('moveend', (eventData) => {
             let canvas = map.getCanvas()
@@ -26,7 +29,7 @@ window.mapHelper = {
             let coordBottomRight = map.unproject([w, h]).toArray()
 
             if (lastTL.length == 2 || lastBR.length == 2) {
-                if (sourcesCount < 50 && lastTL[1] >= coordTopLeft[1] && lastTL[0] <= coordTopLeft[0] && lastBR[1] <= coordBottomRight[1] && lastBR[0] >= coordBottomRight[0]) {
+                if (lastTL[1] >= coordTopLeft[1] && lastTL[0] <= coordTopLeft[0] && lastBR[1] <= coordBottomRight[1] && lastBR[0] >= coordBottomRight[0]) {
                     return;
                 }
             }
@@ -41,20 +44,22 @@ window.mapHelper = {
                     json = JSON.parse(json);
                     $.each(json, function (index, result) {
 
-                        const routeId = /*'route-' + */result.routeId.toString();
-
-                        if (jQuery.inArray(routeId, sources) !== -1) {
-                            return;
-                        }
                         console.log(result.source);
 
-                        map.addSource(routeId, result.source);
-                        sources.push(routeId);
+                        const routeSourceId = 'route-' + result.routeId.toString() + '-source';
+                        const routeLayerLineId = 'route-' + routeSourceId + "-line";
+                        const routeLayerSymbolId = 'route-' + routeSourceId + '-symbol';
+
+                        if (jQuery.inArray(routeSourceId, sources) !== -1) {
+                            return;
+                        }
+
+                        map.addSource(routeSourceId, result.source);
 
                         map.addLayer({
-                            'id': 'line-' + routeId,
+                            'id': routeLayerLineId,
                             'type': 'line',
-                            'source': routeId,
+                            'source': routeSourceId,
                             'layout': {
                                 'line-join': 'round',
                                 'line-cap': 'round'
@@ -66,11 +71,10 @@ window.mapHelper = {
                             'filter': ['==', '$type', 'LineString']
                         });
 
-                        // Add a symbol layer
                         map.addLayer({
-                            'id': 'sp-' + routeId,
+                            'id': routeLayerSymbolId,
                             'type': 'symbol',
-                            'source': routeId,
+                            'source': routeSourceId,
                             'layout': {
                                 'icon-image': 'marker-' + result.difficulty,
                                 // get the title name from the source's "title" property
@@ -84,23 +88,23 @@ window.mapHelper = {
                                 'text-offset': [0, 0.2],
                                 'text-anchor': 'top'
                             },
-                            'filter': ['==', '$type', 'Point']
+                            'filter': ['all', ['==', '$type', 'Point'], ['==', 'type', 0]]
                         });
-                        layers.push(routeId);
 
+                        sources.push(routeSourceId);
+                        routelayers.push(routeLayerLineId);
+                        routelayers.push(routeLayerSymbolId);
 
+                        map.on('click', routeLayerSymbolId, onRouteClick);
 
-                        map.on('click', 'sp-' + routeId, onRouteClick);
-
-                        map.on('mouseenter', 'sp-' + routeId, function (e) {
+                        map.on('mouseenter', routeLayerSymbolId, function (e) {
                             map.getCanvas().style.cursor = 'pointer';
                         });
 
-                        map.on('mouseleave', 'sp-' + routeId, function () {
+                        map.on('mouseleave', routeLayerSymbolId, function () {
                             map.getCanvas().style.cursor = '';
                         });
                     });
-                    sourcesCount = json.length;
                 });
         });
 
@@ -115,12 +119,13 @@ window.mapHelper = {
             });
             console.log(e.features[0]);
 
-            var coordinates = e.features[0].geometry.coordinates.slice();
+            var currentCoordinates = e.features[0].geometry.coordinates.slice();
             var routeName = e.features[0].properties.title;
-            var source = e.features[0].source.toString();
+            var routeId = e.features[0].properties.routeId;
+            var routeSourceId = e.features[0].source.toString();
 
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            while (Math.abs(e.lngLat.lng - currentCoordinates[0]) > 180) {
+                currentCoordinates[0] += e.lngLat.lng > currentCoordinates[0] ? 360 : -360;
             }
 
             //Header
@@ -140,16 +145,16 @@ window.mapHelper = {
 
             var info = $("<div />");
             info.addClass("m-2 text-danger");
-            info.prop("id", "info-" + source);
+            info.prop("id", "info-" + routeId);
 
             var distance = $("<div />");
             distance.addClass("m-2");
-            distance.prop("id", "distance-" + source);
+            distance.prop("id", "distance-" + routeId);
             distance.text("Odległość: obliczanie...");
 
             var accuracy = $("<div />");
             accuracy.addClass("m-2");
-            accuracy.prop("id", "accuracy-" + source);
+            accuracy.prop("id", "accuracy-" + routeId);
             accuracy.text("Dokładność: obliczanie...");
 
             var rankBtn = $("<button />");
@@ -158,7 +163,7 @@ window.mapHelper = {
 
             var playBtn = $("<button />");
             playBtn.addClass("btn btn-warning m-2");
-            playBtn.prop("id", "play-" + source);
+            playBtn.prop("id", "play-" + routeId);
             playBtn.prop('disabled', true);
             playBtn.text("Trwa lokalizacja");
 
@@ -169,21 +174,21 @@ window.mapHelper = {
             var mainContainerHTML = $("<div />").append($(mainContainer).clone()).html()
             console.log(mainContainerHTML);
 
-            popup.setLngLat(coordinates).setHTML(mainContainerHTML).addTo(map);
+            popup.setLngLat(currentCoordinates).setHTML(mainContainerHTML).addTo(map);
 
             let geolocation = window.navigator.geolocation.watchPosition(
                 function (position) {
                     var crd = position.coords;
 
-                    let playBtnEle = $("#play-" + source);
+                    let playBtnEle = $("#play-" + routeId);
                     current_accuracy = crd.accuracy;
                     current_latitude = position.coords.latitude;
                     current_longitude = position.coords.longitude;
-                    var distance = CalculateDistance(coordinates[1], coordinates[0], current_latitude, current_longitude);
+                    var distance = CalculateDistance(currentCoordinates[1], currentCoordinates[0], current_latitude, current_longitude);
                     console.log("Distance: " + distance);
 
-                    let distanceEle = $("#distance-" + source);
-                    let accuracyEle = $("#accuracy-" + source);
+                    let distanceEle = $("#distance-" + routeId);
+                    let accuracyEle = $("#accuracy-" + routeId);
 
                     if (distance > 150000) {
                         distanceEle.text(`Odległość: > 150 km`);
@@ -206,7 +211,7 @@ window.mapHelper = {
                         accuracyEle.text(`Dokładność: ${current_accuracy.toFixed(0)} metrów`);
                     }
 
-                    let infoEle = $("#info-" + source)
+                    let infoEle = $("#info-" + routeId)
 
                     if (distance > 10) {
                         playBtnEle.removeClass("btn-warning");
@@ -240,32 +245,114 @@ window.mapHelper = {
                 window.navigator.geolocation.clearWatch(geolocation);
             });
 
-            $("#play-" + source).on('click', function () {
-                console.log("playBtn click");
+            $("#play-" + routeId).on('click', function () {
 
-                let playButton = $("#play-" + source);
-                let infoButton = $("#info-" + source);
-                infoButton.text('');
+                // Hide all routes
+                $.each(routelayers, function (index, value) {
+                    map.setLayoutProperty(value, 'visibility', 'none');
+                });
 
-                playButton.prop('disabled', true);
-                var textLast = playButton.text();
-                playButton.text("Rozpoczynanie");
+                const routeRunDottedLineId = 'route-run-' + routeId + '-dotted-line';
 
-                dotnetHelper.invokeMethodAsync('CreateRun', parseInt(source), current_latitude, current_longitude, current_accuracy)
-                    .then(json => {
+                const routeRunStartLayer = 'route-run-' + routeId + '-start';
+                const routeRunOtherLayer = 'route-run-' + routeId + '-other';
+                const routeRunFinishLayer = 'route-run-' + routeId + '-finish';
 
-                        playButton.text(textLast);
-                        playButton.prop('disabled', false);
+                map.addLayer({
+                    'id': routeRunDottedLineId,
+                    'type': 'line',
+                    'source': routeSourceId,
+                    'layout': {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    'paint': {
+                        'line-color': 'grey',
+                        'line-width': 4,
+                        'line-dasharray': [4, 3],
+                    },
+                    'filter': ['==', '$type', 'LineString']
+                });
 
-                        console.log(json);
-                        if (json.isSuccess === false) {
-                            infoButton.text(json.message);
-                            return false;
+                map.addLayer({
+                    'id': routeRunStartLayer,
+                    'type': 'circle',
+                    'source': routeSourceId,
+                    'paint': {
+                        'circle-color': 'green',
+                        'circle-radius': 8,
+                    },
+                    'filter': ['all', ['==', '$type', 'Point'], ['==', 'type', 0]]
+                });
 
-                        } else {
-                            //Draw Route
-                        }
-                    });
+                map.addLayer({
+                    'id': routeRunOtherLayer,
+                    'type': 'circle',
+                    'source': routeSourceId,
+                    'paint': {
+                        'circle-color': 'grey',
+                        'circle-radius': 8,
+                    },
+                    'filter': ['all', ['==', '$type', 'Point'], ['==', 'type', 3]]
+                });
+
+
+                map.addLayer({
+                    'id': routeRunFinishLayer,
+                    'type': 'circle',
+                    'source': routeSourceId,
+                    'paint': {
+                        'circle-color': 'red',
+                        'circle-radius': 8,
+                    },
+                    'filter': ['all', ['==', '$type', 'Point'], ['==', 'type', 2]]
+                });
+            
+                $(".mapboxgl-popup").remove();
+
+                alertify.set('notifier', 'position', 'top-center');
+
+                alertify.message('Przygotuj się', 2.5);
+
+                setTimeout(function () {
+                    alertify.message('3', 1);
+                    setTimeout(function () {
+                        alertify.message('2', 1);
+                        setTimeout(function () {
+                            alertify.message('1', 1);
+                            setTimeout(function () {
+                                alertify.success('Start!', 2);
+                            }, 1000);
+                        }, 1000);
+                    }, 1000);
+                }, 3200);
+
+               
+                //console.log("playBtn click");
+
+                //let playButton = $("#play-" + routeId);
+                //let infoButton = $("#info-" + routeId);
+                //infoButton.text('');
+
+                //playButton.prop('disabled', true);
+                //var textLast = playButton.text();
+                //playButton.text("Rozpoczynanie");
+
+                //dotnetHelper.invokeMethodAsync('CreateRun', parseInt(source), current_latitude, current_longitude, current_accuracy)
+                //    .then(json => {
+
+                //        playButton.text(textLast);
+                //        playButton.prop('disabled', false);
+
+                //        console.log(json);
+                //        if (json.isSuccess === false) {
+                //            infoButton.text(json.message);
+                //            return false;
+
+                //        } else {
+                //            //Draw Route
+                //        }
+                //    });
             })
             function error(err) {
                 console.warn(`ERROR(${err.code}): ${err.message}`);

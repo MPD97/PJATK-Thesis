@@ -68,6 +68,12 @@ namespace Thesis.WebUI.Client.Pages
             return await _routeService.GetRoutesGeoJson(topLeftLat, topLeftLon, bottomRightLat, bottomRightLon, 50);
         }
 
+        [JSInvokable("GetRouteGeoJson")]
+        public async Task<string> GetRouteGeoJson(int routeId)
+        {
+            return await _routeService.GetRouteGeoJson(routeId);
+        }
+
         [JSInvokable("CreateRun")]
         public async Task<ApiResult<RunDto>> CreateRun(int routeId, decimal latitude, decimal longitude, int accuracy)
         {

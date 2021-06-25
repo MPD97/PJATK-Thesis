@@ -22,7 +22,7 @@ namespace Thesis.Application.Common.Extensions
                 .ToArray();
 
             routeLine.Geometry.Coordinates = sortedPoints;
-            routeLine.Properties = new RouteProperties() { Type = RoutePointType.Line };
+            routeLine.Properties = new RouteLineProperties() { Type = RoutePointType.Line, RouteId = route.Id };
 
             var result = new RouteData[route.Points.Count() + 1];
             result[0] = routeLine;
@@ -34,15 +34,15 @@ namespace Thesis.Application.Common.Extensions
                 
                 if (i == 0)
                 {
-                    routeData.Properties = new RouteProperties() { Type = RoutePointType.Start };
+                    routeData.Properties = new RoutePointProperties() { Type = RoutePointType.Start, Order = i + 1 };
                 }
                 else if(i != sortedPoints.Length - 1)
                 {
-                    routeData.Properties = new RouteProperties() { Type = RoutePointType.End };
+                    routeData.Properties = new RoutePointProperties() { Type = RoutePointType.End, Order = i + 1 };
                 }
                 else
                 {
-                    routeData.Properties = new RouteProperties() { Type = RoutePointType.Other };
+                    routeData.Properties = new RoutePointProperties() { Type = RoutePointType.Other, Order = i + 1 };
                 }
 
                 result[i + 1] = routeData;
