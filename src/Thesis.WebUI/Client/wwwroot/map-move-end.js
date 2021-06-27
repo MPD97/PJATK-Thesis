@@ -307,7 +307,7 @@ window.mapHelper = {
                     },
                     'filter': ['all', ['==', '$type', 'Point'], ['==', 'type', 2]]
                 });
-            
+
                 $(".mapboxgl-popup").remove();
 
                 alertify.set('notifier', 'position', 'top-center');
@@ -320,6 +320,24 @@ window.mapHelper = {
                         alertify.message('2', 1);
                         setTimeout(function () {
                             alertify.message('1', 1);
+
+                            dotnetHelper.invokeMethodAsync('CreateRun', parseInt(routeId), current_latitude, current_longitude, current_accuracy)
+                                .then(json => {
+
+                                    playButton.text(textLast);
+                                    playButton.prop('disabled', false);
+
+                                    console.log(json);
+                                    if (json.isSuccess === false) {
+                                        infoButton.text(json.message);
+                                        return false;
+
+                                    } else {
+                                        //Draw Route
+                                    }
+                                });
+
+
                             setTimeout(function () {
                                 alertify.success('Start!', 2);
                             }, 1000);
@@ -327,7 +345,7 @@ window.mapHelper = {
                     }, 1000);
                 }, 3200);
 
-               
+
                 //console.log("playBtn click");
 
                 //let playButton = $("#play-" + routeId);

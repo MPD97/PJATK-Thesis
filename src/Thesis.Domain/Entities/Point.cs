@@ -40,6 +40,8 @@ namespace Thesis.Domain.Entities
         public byte Order { get; set; }
         public byte Radius { get; set; }
         public virtual Route Route { get; set; }
+        public virtual Point NextPoint { get; set; }
+        public int? NextPointId { get; set; }
         public virtual IList<CompletedPoint> CompletedPoints { get; set; } = new List<CompletedPoint>();
 
         public static readonly decimal LATITUDE_MIN_VALUE = -90M;
