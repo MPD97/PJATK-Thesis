@@ -16,15 +16,14 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
         public RunStatus Status { get; set; }
         public DateTime StartTime { get; set; }
 
-        public IList<PointDto> NextPoint { get; set; }
-        public IList<PointDto> CompletedPoint { get; set; }
+        public PointDto NextPoint { get; set; }
+        public PointDto CompletedPoint { get; set; }
 
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Run, RunDto>()
-                .ForMember(run => run.CompletedPoint, m => m.MapFrom(source => source.CompletedPoints.First(cp => cp.Point.Order == source.CompletedPoints.Max(c => c.Point.Order)).Point))
-                .ForMember(run => run.NextPoint, m => m.MapFrom(source => source.CompletedPoints.First(cp => cp.Point.Order == source.CompletedPoints.Max(c => c.Point.Order)).Point.NextPoint));
-
+                .ForMember(run => run.CompletedPoint, m => m.MapFrom(src => src.CompletedPoints.Where(cp => cp.Point.Order == src.CompletedPoints.Max(w => w.Point.Order)).FirstOrDefault().Point))
+                .ForMember(run => run.NextPoint, m => m.MapFrom(src => src.CompletedPoints.Where(cp => cp.Point.Order == src.CompletedPoints.Max(w => w.Point.Order)).FirstOrDefault().Point.NextPoint));
         }
     }
    

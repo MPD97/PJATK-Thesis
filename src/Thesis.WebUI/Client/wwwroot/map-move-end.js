@@ -314,6 +314,8 @@ window.mapHelper = {
 
                 alertify.message('Przygotuj się', 2.5);
 
+                console.log(routeId);
+
                 setTimeout(function () {
                     alertify.message('3', 1);
                     setTimeout(function () {
@@ -324,12 +326,10 @@ window.mapHelper = {
                             dotnetHelper.invokeMethodAsync('CreateRun', parseInt(routeId), current_latitude, current_longitude, current_accuracy)
                                 .then(json => {
 
-                                    playButton.text(textLast);
-                                    playButton.prop('disabled', false);
-
                                     console.log(json);
                                     if (json.isSuccess === false) {
-                                        infoButton.text(json.message);
+                                        alertify.error(json.message);
+                                        alertify.error(json.errors);
                                         return false;
 
                                     } else {

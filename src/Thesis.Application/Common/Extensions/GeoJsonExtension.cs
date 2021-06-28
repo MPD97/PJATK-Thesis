@@ -18,11 +18,13 @@ namespace Thesis.Application.Common.Extensions
 
             var sortedPoints = route.Points
                 .OrderBy(point => point.Order)
+                .ToArray();
+
+            routeLine.Geometry.Coordinates = sortedPoints
                 .Select(point => new decimal[2] { point.Longitude, point.Latitude })
                 .ToArray();
 
-            routeLine.Geometry.Coordinates = sortedPoints;
-            routeLine.Properties = new RouteLineProperties() { Type = RoutePointType.Line, RouteId = route.Id };
+            routeLine.Properties = new RouteLineProperties() { Type = RoutePointType.Line };
 
             var result = new RouteData[route.Points.Count() + 1];
             result[0] = routeLine;
@@ -30,22 +32,23 @@ namespace Thesis.Application.Common.Extensions
             for (int i = 0; i < sortedPoints.Length; i++)
             {
                 var routeData = new RouteData();
-                routeData.Geometry = CreateRouteGeometryPoint(sortedPoints[i]);
+                routeData.Geometry = CreateRouteGeometryPoint(new decimal[2] { sortedPoints[i].Longitude, sortedPoints[i].Latitude });
                 
+                int idx = i + 1;
                 if (i == 0)
                 {
-                    routeData.Properties = new RoutePointProperties() { Type = RoutePointType.Start, Order = i + 1 };
+                    routeData.Properties = new RoutePointPropertiesWithRouteId(RoutePointType.Start, idx, sortedPoints[i].PointId, route.Id);
                 }
-                else if(i != sortedPoints.Length - 1)
+                else if (i != sortedPoints.Length - 1)
                 {
-                    routeData.Properties = new RoutePointProperties() { Type = RoutePointType.End, Order = i + 1 };
+                    routeData.Properties = new RoutePointProperties(RoutePointType.End, idx, sortedPoints[i].PointId);
                 }
                 else
                 {
-                    routeData.Properties = new RoutePointProperties() { Type = RoutePointType.Other, Order = i + 1 };
+                    routeData.Properties = new RoutePointProperties(RoutePointType.Other, idx, sortedPoints[i].PointId);
                 }
 
-                result[i + 1] = routeData;
+                result[idx] = routeData;
             }
 
             return result;

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using MediatR;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Thesis.Application.Common.Interfaces;
+using Thesis.Application.Common.Routes.Queries.GetRoutes;
 
 namespace Thesis.Application.Common.Routes.Commands.CreateRun
 {
@@ -54,7 +56,9 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
 
             var run = await _routeService.CreateRun(request.RouteId, userId);
 
+
             var result = _mapper.Map<RunDto>(run);
+
             return result;
         }
     }
