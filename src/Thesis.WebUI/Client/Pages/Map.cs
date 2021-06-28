@@ -86,5 +86,19 @@ namespace Thesis.WebUI.Client.Pages
 
             return result;
         }
+
+
+        [JSInvokable("ReachPoint")]
+        public async Task<ApiResult<RunDto>> ReachPoint(int runId, int pointId, decimal latitude, decimal longitude, int accuracy)
+        {
+            if (!IsAuthenticated)
+            {
+                UriHelper.NavigateTo("authentication/login");
+                return null;
+            }
+            var result = await _runService.ReachPoint(runId, pointId, latitude, longitude, accuracy);
+
+            return result;
+        }
     }
 }

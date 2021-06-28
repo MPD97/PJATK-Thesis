@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Thesis.Application.Common.Interfaces;
 using Thesis.Domain.Entities;
@@ -12,7 +10,6 @@ namespace Thesis.Infrastructure.Services
 {
     public class DbRunService : IRunService
     {
-
         private readonly IRepository<Run> _runRepository;
         private readonly IRepository<CompletedPoint> _completedPointsRepository;
         private readonly IDateTime _date;
@@ -44,12 +41,16 @@ namespace Thesis.Infrastructure.Services
             return completedPoint;
         }
 
-        public Task<Run> CompleteRun(int routeId, int userId)
+        public async Task<Run> CompleteRun(Run run)
         {
-            throw new NotImplementedException();
+            run.CompleteRun(_date.Now);
+
+            await _runRepository.UpdateAsync(run);
+
+            return run;
         }
 
-        public async Task<Run> GetActiveRun(int routeId, int userId)
+        public async Task<Run> GetActiveRunNoTracking(int routeId, int userId)
         {
             var run = await _runRepository
                 .GetAll()
@@ -62,7 +63,7 @@ namespace Thesis.Infrastructure.Services
             return run;
         }
 
-        public async Task<Run> GetActiveRun(int userId)
+        public async Task<Run> GetActiveRunNoTracking(int userId)
         {
             var run = await _runRepository
                 .FindBy(r => r.UserId == userId)
@@ -72,8 +73,16 @@ namespace Thesis.Infrastructure.Services
 
             return run;
         }
+        public async Task<Run> GetActiveRun(int userId)
+        {
+            var run = await _runRepository
+                .FindBy(r => r.UserId == userId)
+                .Where(r => r.Status == RunStatus.InProgress)
+                .FirstOrDefaultAsync();
 
-        public async Task<Run> GetRun(int runId)
+            return run;
+        }
+        public async Task<Run> GetRunNoTracking(int runId)
         {
             var run = await _runRepository
                 .GetAll()
@@ -84,7 +93,7 @@ namespace Thesis.Infrastructure.Services
             return run;
         }
 
-        public async Task<IReadOnlyList<Run>> GetUserRuns(int userId)
+        public async Task<IReadOnlyList<Run>> GetUserRunsNoTracking(int userId)
         {
             var runs = await _runRepository
                 .GetAll()
@@ -94,6 +103,11 @@ namespace Thesis.Infrastructure.Services
                 .ToListAsync();
 
             return runs;
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _runRepository.SaveChangesAsync();
         }
     }
 }

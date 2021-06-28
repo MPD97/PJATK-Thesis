@@ -16,7 +16,7 @@ namespace Thesis.Infrastructure.Services
             _repository = repository;
         }
 
-        public async Task<ICollection<Point>> GetRoutePoints(int routeId)
+        public async Task<ICollection<Point>> GetRoutePointsNoTracking(int routeId)
         {
             var points = await _repository
                 .GetAll()
@@ -28,13 +28,34 @@ namespace Thesis.Infrastructure.Services
             return points;
         }
 
-        public async Task<Point> GetPoint(int routeId, int pointOrder)
+        public async Task<Point> GetPointNoTracking(int routeId, int pointOrder)
         {
             var point = await _repository
                   .FindBy(p => p.RouteId == routeId)
                   .AsNoTracking()
                   .Where(p => p.Order == pointOrder)
                   .FirstOrDefaultAsync();
+
+            return point;
+        }
+
+        public async Task<Point> GetPointNoTracking(int pointId)
+        {
+            var point = await _repository
+              .FindBy(p => p.Id == pointId)
+              .AsNoTracking()
+              .FirstOrDefaultAsync();
+
+            return point;
+        }
+
+        public async Task<Point> GetPoint(int pointId)
+        {
+            var point = await _repository
+              .FindBy(p => p.Id == pointId)
+              .Include(p => p.Route)
+              .Include(p => p.NextPoint)
+              .FirstOrDefaultAsync();
 
             return point;
         }

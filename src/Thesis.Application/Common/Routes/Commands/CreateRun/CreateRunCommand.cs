@@ -47,7 +47,7 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
         {
             var userId = int.Parse(_currentUserService.UserId);
 
-            var activeRun = await _runService.GetActiveRun(userId);
+            var activeRun = await _runService.GetActiveRunNoTracking(userId);
 
             if (activeRun is not null)
             {

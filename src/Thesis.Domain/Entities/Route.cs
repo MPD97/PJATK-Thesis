@@ -203,7 +203,7 @@ namespace Thesis.Domain.Entities
 
         public Run CreateRun(int userId, DateTime startDate)
         {
-            var run = new Run(userId, RunStatus.InProgress, startDate);
+            var run = new Run(userId, this, RunStatus.InProgress, startDate);
             
             Runs.Add(run);
 

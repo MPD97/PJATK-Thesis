@@ -328,85 +328,7 @@ window.mapHelper = {
                         setTimeout(function () {
                             alertify.message('1', 1);
 
-                            dotnetHelper.invokeMethodAsync('CreateRun', parseInt(routeId), current_latitude, current_longitude, current_accuracy)
-                                .then(json => {
-
-                                    console.log(json);
-                                    if (json.isSuccess === false) {
-                                        alertify.error(json.message);
-                                        alertify.error(json.errors);
-
-                                        removeRunLayers();
-                                        showAllRoutes();
-                                        return false;
-
-                                    } else {
-                                        if (json.result.status == 2 ) {
-                                            console.log('Run completed');
-                                            alertify.success('Run completed');
-
-                                            removeRunLayers();
-                                            showAllRoutes();
-                                            return false;
-                                        }
-
-                                        let nextPositon = json.result.nextPoint;
-                                        let nextPointCoordinates = [nextPositon.longitude, nextPositon.latitude];
-                                        let nextPointRadius = nextPositon.radius;
-
-                                        let geolocationRunHandler = window.navigator.geolocation.watchPosition(
-                                            function (position) {
-                                                let crd = position.coords;
-
-                                                current_accuracy = crd.accuracy;
-                                                current_latitude = position.coords.latitude;
-                                                current_longitude = position.coords.longitude;
-
-                                                let distance = CalculateDistance(nextPointCoordinates[1], nextPointCoordinates[0], current_latitude, current_longitude);
-
-                                                let distanceText = '';
-                                                let accuracyText = '';
-
-                                                if (distance > 150000) {
-                                                    distanceText = `Odległość do następnego punktu: > 150 km`;
-                                                }
-                                                else if (distance > 1000) {
-                                                    distanceText = `Odległość do następnego punktu: ${(distance / 1000).toFixed(1)} km`;
-                                                }
-                                                else {
-                                                    distanceText = `Odległość do następnego punktu: ${distance.toFixed(0)} metrów`;
-                                                }
-
-
-                                                if (current_accuracy.toFixed(0) > 10000) {
-                                                    accuracyText = `Dokładność: > 10 km`;
-                                                }
-                                                else if (current_accuracy.toFixed(0) > 1000) {
-                                                    accuracyText = `Dokładność: ${(current_accuracy / 1000).toFixed(1)} km`;
-                                                }
-                                                else {
-                                                    accuracyText = `Dokładność: ${current_accuracy.toFixed(0)} metrów`;
-                                                }
-
-
-
-                                                if (distance <= nextPointRadius) {
-                                                    console.log('Prawidłowa odległośc od następnego punktu');
-                                                    console.log(distanceText);
-                                                    console.log(accuracyText);
-
-                                                } else {
-                                                    console.log(distanceText);
-                                                    console.log(accuracyText);
-                                                }
-
-
-                                            }, geolocationError, geolocationOptions
-                                        );
-
-                                        completePoint(json, routeId, routeSourceId);
-                                    }
-                                });
+                            createRun(dotnetHelper, routeId, routeSourceId);
 
 
                             setTimeout(function () {
@@ -423,6 +345,119 @@ window.mapHelper = {
 };
 
 
+
+function createRun(dotnetHelper, routeId, routeSourceId) {
+    dotnetHelper.invokeMethodAsync('CreateRun', parseInt(routeId), current_latitude, current_longitude, current_accuracy)
+        .then(json => {
+
+            console.log(json);
+            if (json.isSuccess === false) {
+                alertify.error(json.message);
+                alertify.error(json.errors);
+
+                removeRunLayers();
+                showAllRoutes();
+                return false;
+
+            } else {
+                if (json.result.status == 2) {
+                    console.log('Run completed');
+                    alertify.success('Run completed');
+
+                    removeRunLayers();
+                    showAllRoutes();
+                    return false;
+                }
+
+                completePoint(json, routeId, routeSourceId);
+
+                let runId = json.result.id;
+                let nextPoint = json.result.nextPoint;
+                let nextPointId = nextPoint.pointId;
+                let nextPointCoordinates = [nextPoint.longitude, nextPoint.latitude];
+                let nextPointRadius = nextPoint.radius;
+
+                let geolocationRunHandler = window.navigator.geolocation.watchPosition(
+                    function(position) {
+                        let crd = position.coords;
+
+                        current_accuracy = crd.accuracy;
+                        current_latitude = position.coords.latitude;
+                        current_longitude = position.coords.longitude;
+
+                        let distance = CalculateDistance(nextPointCoordinates[1], nextPointCoordinates[0], current_latitude, current_longitude);
+
+                        let distanceText = '';
+                        let accuracyText = '';
+
+                        if (distance > 150000) {
+                            distanceText = `Odległość do następnego punktu: > 150 km`;
+                        }
+                        else if (distance > 1000) {
+                            distanceText = `Odległość do następnego punktu: ${(distance / 1000).toFixed(1)} km`;
+                        }
+                        else {
+                            distanceText = `Odległość do następnego punktu: ${distance.toFixed(0)} metrów`;
+                        }
+
+
+                        if (current_accuracy.toFixed(0) > 10000) {
+                            accuracyText = `Dokładność: > 10 km`;
+                        }
+                        else if (current_accuracy.toFixed(0) > 1000) {
+                            accuracyText = `Dokładność: ${(current_accuracy / 1000).toFixed(1)} km`;
+                        }
+                        else {
+                            accuracyText = `Dokładność: ${current_accuracy.toFixed(0)} metrów`;
+                        }
+
+
+
+                        if (distance <= nextPointRadius) {
+                            console.log('Prawidłowa odległośc od następnego punktu');
+                            dotnetHelper.invokeMethodAsync('ReachPoint', parseInt(runId), parseInt(nextPointId), current_latitude, current_longitude, current_accuracy)
+                                .then(reachPointResult => {
+
+                                    if (reachPointResult.isSuccess === false) {
+                                        alertify.error(reachPointResult.message);
+                                        alertify.error(reachPointResult.errors);
+
+                                        return;
+                                    }
+                                    else {
+                                        if (reachPointResult.result.status == 2) {
+                                            console.log('Run completed');
+                                            alertify.success('Run completed');
+
+                                            removeRunLayers();
+                                            showAllRoutes();
+
+                                            window.navigator.geolocation.clearWatch(geolocationRunHandler);
+                                            return false;
+                                        }
+
+
+                                        completePoint(reachPointResult, routeId, routeSourceId);
+
+                                        nextPoint = reachPointResult.result.nextPoint;
+                                        nextPointId = nextPoint.pointId;
+                                        nextPointCoordinates = [nextPoint.longitude, nextPoint.latitude];
+                                        nextPointRadius = nextPoint.radius;
+                                    }
+
+                                });
+                        } else {
+                            console.log(distanceText);
+                            console.log(accuracyText);
+                        }
+
+
+                    }, geolocationError, geolocationOptions
+                );
+
+            }
+        });
+}
 
 function hideAllRoutes() {
     $.each(routelayers, function (index, layerId) {
