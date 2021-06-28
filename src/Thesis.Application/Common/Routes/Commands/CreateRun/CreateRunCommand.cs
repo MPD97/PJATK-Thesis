@@ -56,7 +56,6 @@ namespace Thesis.Application.Common.Routes.Commands.CreateRun
 
             var run = await _routeService.CreateRun(request.RouteId, userId);
 
-
             var result = _mapper.Map<RunDto>(run);
 
             return result;

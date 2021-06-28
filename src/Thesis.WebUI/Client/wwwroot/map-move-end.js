@@ -9,16 +9,20 @@ let current_latitude = undefined;
 let current_longitude = undefined;
 let dotnetHelper = undefined;
 
+
+let lastTL = [];
+let lastBR = [];
+
+let sources = [];
+let routelayers = [];
+let runLayers = [];
+let runCompletedPointLayers = [];
+
 window.mapHelper = {
     init: dotnetHelper => {
         dotnetHelper = dotnetHelper;
 
-        let lastTL = [];
-        let lastBR = [];
 
-        let sources = [];
-        let routelayers = [];
-        let runlayers = [];
 
         map.on('moveend', (eventData) => {
             let canvas = map.getCanvas()
@@ -237,7 +241,7 @@ window.mapHelper = {
 
                     infoEle.text();
 
-                }, error, geolocationOptions
+                }, geolocationError, geolocationOptions
             );
 
             popup.on('close', function (e) {
@@ -247,16 +251,13 @@ window.mapHelper = {
 
             $("#play-" + routeId).on('click', function () {
 
-                // Hide all routes
-                $.each(routelayers, function (index, value) {
-                    map.setLayoutProperty(value, 'visibility', 'none');
-                });
+                hideAllRoutes();
 
-                const routeRunDottedLineId = 'route-run-' + routeId + '-dotted-line';
+                const routeRunDottedLineId = 'route-' + routeId + '-run-dotted-line';
 
-                const routeRunStartLayer = 'route-run-' + routeId + '-start';
-                const routeRunOtherLayer = 'route-run-' + routeId + '-other';
-                const routeRunFinishLayer = 'route-run-' + routeId + '-finish';
+                const routeRunStartLayer = 'route-' + routeId + '-run-start';
+                const routeRunOtherLayer = 'route-' + routeId + '-run-other';
+                const routeRunFinishLayer = 'route-' + routeId + '-run-finish';
 
                 map.addLayer({
                     'id': routeRunDottedLineId,
@@ -273,17 +274,19 @@ window.mapHelper = {
                     },
                     'filter': ['==', '$type', 'LineString']
                 });
+                runLayers.push(routeRunDottedLineId);
 
                 map.addLayer({
                     'id': routeRunStartLayer,
                     'type': 'circle',
                     'source': routeSourceId,
                     'paint': {
-                        'circle-color': 'green',
+                        'circle-color': 'blue',
                         'circle-radius': 8,
                     },
                     'filter': ['all', ['==', '$type', 'Point'], ['==', 'type', 0]]
                 });
+                runLayers.push(routeRunStartLayer);
 
                 map.addLayer({
                     'id': routeRunOtherLayer,
@@ -295,6 +298,7 @@ window.mapHelper = {
                     },
                     'filter': ['all', ['==', '$type', 'Point'], ['==', 'type', 3]]
                 });
+                runLayers.push(routeRunOtherLayer);
 
 
                 map.addLayer({
@@ -307,8 +311,9 @@ window.mapHelper = {
                     },
                     'filter': ['all', ['==', '$type', 'Point'], ['==', 'type', 2]]
                 });
+                runLayers.push(routeRunFinishLayer);
 
-                $(".mapboxgl-popup").remove();
+                $(".mapboxgl-popup-close-button").click();
 
                 alertify.set('notifier', 'position', 'top-center');
 
@@ -330,10 +335,76 @@ window.mapHelper = {
                                     if (json.isSuccess === false) {
                                         alertify.error(json.message);
                                         alertify.error(json.errors);
+
+                                        removeRunLayers();
+                                        showAllRoutes();
                                         return false;
 
                                     } else {
-                                        //Draw Route
+                                        if (json.result.status == 2 ) {
+                                            console.log('Run completed');
+                                            alertify.success('Run completed');
+
+                                            removeRunLayers();
+                                            showAllRoutes();
+                                            return false;
+                                        }
+
+                                        let nextPositon = json.result.nextPoint;
+                                        let nextPointCoordinates = [nextPositon.longitude, nextPositon.latitude];
+                                        let nextPointRadius = nextPositon.radius;
+
+                                        let geolocationRunHandler = window.navigator.geolocation.watchPosition(
+                                            function (position) {
+                                                let crd = position.coords;
+
+                                                current_accuracy = crd.accuracy;
+                                                current_latitude = position.coords.latitude;
+                                                current_longitude = position.coords.longitude;
+
+                                                let distance = CalculateDistance(nextPointCoordinates[1], nextPointCoordinates[0], current_latitude, current_longitude);
+
+                                                let distanceText = '';
+                                                let accuracyText = '';
+
+                                                if (distance > 150000) {
+                                                    distanceText = `Odległość do następnego punktu: > 150 km`;
+                                                }
+                                                else if (distance > 1000) {
+                                                    distanceText = `Odległość do następnego punktu: ${(distance / 1000).toFixed(1)} km`;
+                                                }
+                                                else {
+                                                    distanceText = `Odległość do następnego punktu: ${distance.toFixed(0)} metrów`;
+                                                }
+
+
+                                                if (current_accuracy.toFixed(0) > 10000) {
+                                                    accuracyText = `Dokładność: > 10 km`;
+                                                }
+                                                else if (current_accuracy.toFixed(0) > 1000) {
+                                                    accuracyText = `Dokładność: ${(current_accuracy / 1000).toFixed(1)} km`;
+                                                }
+                                                else {
+                                                    accuracyText = `Dokładność: ${current_accuracy.toFixed(0)} metrów`;
+                                                }
+
+
+
+                                                if (distance <= nextPointRadius) {
+                                                    console.log('Prawidłowa odległośc od następnego punktu');
+                                                    console.log(distanceText);
+                                                    console.log(accuracyText);
+
+                                                } else {
+                                                    console.log(distanceText);
+                                                    console.log(accuracyText);
+                                                }
+
+
+                                            }, geolocationError, geolocationOptions
+                                        );
+
+                                        completePoint(json, routeId, routeSourceId);
                                     }
                                 });
 
@@ -345,38 +416,61 @@ window.mapHelper = {
                     }, 1000);
                 }, 3200);
 
-
-                //console.log("playBtn click");
-
-                //let playButton = $("#play-" + routeId);
-                //let infoButton = $("#info-" + routeId);
-                //infoButton.text('');
-
-                //playButton.prop('disabled', true);
-                //var textLast = playButton.text();
-                //playButton.text("Rozpoczynanie");
-
-                //dotnetHelper.invokeMethodAsync('CreateRun', parseInt(source), current_latitude, current_longitude, current_accuracy)
-                //    .then(json => {
-
-                //        playButton.text(textLast);
-                //        playButton.prop('disabled', false);
-
-                //        console.log(json);
-                //        if (json.isSuccess === false) {
-                //            infoButton.text(json.message);
-                //            return false;
-
-                //        } else {
-                //            //Draw Route
-                //        }
-                //    });
             })
-            function error(err) {
-                console.warn(`ERROR(${err.code}): ${err.message}`);
 
-                info.text(`Błąd (${err.code}): ${err.message}`)
-            }
         }
     }
 };
+
+
+
+function hideAllRoutes() {
+    $.each(routelayers, function (index, layerId) {
+        map.setLayoutProperty(layerId, 'visibility', 'none');
+    });
+}
+
+function removeRunLayers() {
+    $.each(runLayers, function (index, layerId) {
+        map.removeLayer(layerId);
+    });
+    runLayers = [];
+
+    $.each(runCompletedPointLayers, function (index, layerId) {
+        map.removeLayer(layerId);
+    });
+    runCompletedPointLayers = [];
+}
+
+function showAllRoutes() {
+    $.each(routelayers, function (index, value) {
+        map.setLayoutProperty(value, 'visibility', 'visible');
+    });
+}
+
+function geolocationError(err) {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+}
+
+function completePoint(json, routeId, routeSourceId) {
+    const pointId = json.result.completedPoint.pointId;
+    const runCompletedPoint = 'route-' + routeId + '-run-completed-point-' + pointId;
+
+    if (jQuery.inArray(runCompletedPoint, runCompletedPointLayers) !== -1) {
+        console.error("Point: " + runCompletedPoint + ' is already completed.');
+        return;
+    }
+
+    map.addLayer({
+        'id': runCompletedPoint,
+        'type': 'circle',
+        'source': routeSourceId,
+        'paint': {
+            'circle-color': 'green',
+            'circle-radius': 6,
+        },
+        'filter': ['all', ['==', '$type', 'Point'], ['==', 'pointId', pointId]]
+    });
+
+    runCompletedPointLayers.push(runCompletedPoint);
+}
