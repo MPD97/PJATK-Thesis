@@ -1,12 +1,12 @@
 ﻿using System;
 using Thesis.Domain.Commons;
+using Thesis.Domain.Enums;
 using Thesis.Domain.Exceptions;
 
 namespace Thesis.Domain.Entities
 {
     public class Achievement : BaseEntity
     {
-
         public int Id { get; set; }
         public int UserId { get; set; }
         public int RouteId { get; set; }
@@ -29,14 +29,5 @@ namespace Thesis.Domain.Entities
 
         private string description;
     }
-    public enum AchievementType
-    {
-        FirstPlace,
-        SecondPlace,
-        ThirdPlace,
-        BronzeEnergyOrder,
-        SilverEnergyOrder,
-        GoldEnergyOrder,
-        MasterEnergyOrder
-    }
+    
 }

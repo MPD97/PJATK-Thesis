@@ -16,6 +16,9 @@ namespace Thesis.Infrastructure.Presistance.Congiurations
             builder.Property(u => u.Pseudonym)
                 .HasMaxLength(AppUser.PSEUDONYM_MAX_LENGTH);
 
+            builder.HasIndex(u => u.Pseudonym)
+                .IsUnique();
+
             builder.HasMany(u => u.CreatedRoutes)
                 .WithOne()
                 .HasForeignKey(r => r.CreatedBy)
