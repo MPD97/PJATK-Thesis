@@ -11,10 +11,8 @@ namespace Thesis.Domain.Entities
         public int UserId { get; set; }
         public int RouteId { get; set; }
 
+        public AchievementType Type { get; set; }
         public DateTime Date { get; set; }
-        public byte Place { get; set; }
-        public Route Route { get; set; }
-
         public string Description
         {
             get => description; set
@@ -27,8 +25,18 @@ namespace Thesis.Domain.Entities
             }
         }
 
-        public static readonly int DESCRIPTION_MAX_VALUE = 200;
+        public static readonly int DESCRIPTION_MAX_VALUE = 500;
 
         private string description;
+    }
+    public enum AchievementType
+    {
+        FirstPlace,
+        SecondPlace,
+        ThirdPlace,
+        BronzeEnergyOrder,
+        SilverEnergyOrder,
+        GoldEnergyOrder,
+        MasterEnergyOrder
     }
 }

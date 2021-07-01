@@ -118,7 +118,6 @@ namespace Thesis.Domain.Entities
         public virtual IList<Point> Points { get; protected set; } = new List<Point>();
         public virtual IList<Run> Runs { get; protected set; } = new List<Run>();
         public virtual IList<Media> Medias { get; protected set; } = new List<Media>();
-        public virtual IList<Achievement> Achievements { get; protected set; } = new List<Achievement>();
 
 
         public static readonly int NAME_MAX_LENGTH = 40;
