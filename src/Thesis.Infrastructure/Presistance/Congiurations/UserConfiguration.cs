@@ -35,6 +35,11 @@ namespace Thesis.Infrastructure.Presistance.Congiurations
                 .WithOne()
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u => u.Achievements)
+                .WithOne()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

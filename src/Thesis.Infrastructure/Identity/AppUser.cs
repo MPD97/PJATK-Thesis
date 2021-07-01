@@ -32,6 +32,7 @@ namespace Thesis.Infrastructure.Identity
         public virtual IList<Route> ModifiedRoutes { get; set; }
         public virtual IList<Run> Runs { get; set; }
         public virtual IList<UserAgent> UserAgents { get; set; }
+        public virtual IList<Achievement> Achievements { get; set; }
 
         public static readonly int PSEUDONYM_MIN_LENGTH = 6;
         public static readonly int PSEUDONYM_MAX_LENGTH = 20;
