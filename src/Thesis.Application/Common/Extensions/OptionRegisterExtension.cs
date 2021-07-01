@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,18 @@ namespace Thesis.Application.Common.Extensions
     {
         public static T RegisterExtensionOptions<T>(IServiceCollection services, IConfiguration configuration, string sectionName) where T : class, new()
         {
-            if (string.IsNullOrWhiteSpace(sectionName)) throw new Exception("Section name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(sectionName)) throw new Exception("Section name cannot be null or empty");
 
-            services.Configure<T>(configuration.GetSection(sectionName));
+            var config = configuration.GetSection(sectionName);
+            if (config is null)
+            {
+                var message = $"appsettigs.json is missing configuration for section: {sectionName}";
+                Log.Error(message);
+
+                throw new Exception(message);
+            }
+
+            services.Configure<T>(config);
 
             return GetExtensionOptions<T>(configuration, sectionName);
         }

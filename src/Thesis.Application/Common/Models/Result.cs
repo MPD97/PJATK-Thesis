@@ -8,6 +8,7 @@ namespace Thesis.Application.Common.Models
 {
     public class Result
     {
+        public Result() { }
         internal Result(bool succeeded, IEnumerable<string> errors)
         {
             Succeeded = succeeded;

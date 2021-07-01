@@ -18,29 +18,48 @@ namespace Thesis.Application.Common.Extensions
 
             var sortedPoints = route.Points
                 .OrderBy(point => point.Order)
+                .ToArray();
+
+            routeLine.Geometry.Coordinates = sortedPoints
                 .Select(point => new decimal[2] { point.Longitude, point.Latitude })
                 .ToArray();
 
-            routeLine.Geometry.Coordinates = sortedPoints;
-            routeLine.Properties = new RouteProperties() { Title = route.Name, Difficulty = route.Difficulty };
+            routeLine.Properties = new RouteLineProperties() { Type = RoutePointType.Line };
 
-            var routeStart = new RouteData();
+            var result = new RouteData[route.Points.Count() + 1];
+            result[0] = routeLine;
 
-            var firstPoint = route.Points
-                .Where(point => point.Order == 1)
-                .Select(point => new decimal[2] { point.Longitude, point.Latitude })
-                .First();
+            for (int i = 0; i < sortedPoints.Length; i++)
+            {
+                var routeData = new RouteData();
+                routeData.Geometry = CreateRouteGeometryPoint(new decimal[2] { sortedPoints[i].Longitude, sortedPoints[i].Latitude });
+                
+                int idx = i + 1;
+                if (i == 0)
+                {
+                    routeData.Properties = new RoutePointPropertiesWithRouteId(RoutePointType.Start, idx, sortedPoints[i].PointId, route.Id);
+                }
+                else if (i != sortedPoints.Length - 1)
+                {
+                    routeData.Properties = new RoutePointProperties(RoutePointType.End, idx, sortedPoints[i].PointId);
+                }
+                else
+                {
+                    routeData.Properties = new RoutePointProperties(RoutePointType.Other, idx, sortedPoints[i].PointId);
+                }
 
-            RouteGeometryPoint geometryPoint = new RouteGeometryPoint();
-            geometryPoint.Coordinates = firstPoint;
-            geometryPoint.Type = "Point";
-
-            routeStart.Geometry = geometryPoint;
-            routeStart.Properties = new RouteProperties() { Title = route.Name, Difficulty = route.Difficulty };
-
-            var result = new RouteData[2] { routeLine, routeStart };
+                result[idx] = routeData;
+            }
 
             return result;
+        }
+        private static RouteGeometryPoint CreateRouteGeometryPoint(decimal[] coordinates)
+        {
+            RouteGeometryPoint geometryPoint = new RouteGeometryPoint();
+            geometryPoint.Coordinates = coordinates;
+            geometryPoint.Type = "Point";
+
+            return geometryPoint;
         }
         public static GJRouteVM ToGeoJsonVM(this RouteDto route)
         {
@@ -77,5 +96,6 @@ namespace Thesis.Application.Common.Extensions
 
             return result;
         }
+
     }
 }

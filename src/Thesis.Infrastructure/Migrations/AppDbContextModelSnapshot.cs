@@ -227,7 +227,7 @@ namespace Thesis.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Thesis.Domain.Entities.CompletedPoints", b =>
+            modelBuilder.Entity("Thesis.Domain.Entities.CompletedPoint", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -240,13 +240,16 @@ namespace Thesis.Infrastructure.Migrations
                     b.Property<int>("RunId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PointId");
 
                     b.HasIndex("RunId");
 
-                    b.ToTable("CompletedPoints");
+                    b.ToTable("CompletedPoint");
                 });
 
             modelBuilder.Entity("Thesis.Domain.Entities.Point", b =>
@@ -264,6 +267,9 @@ namespace Thesis.Infrastructure.Migrations
                         .HasPrecision(11, 8)
                         .HasColumnType("decimal(11,8)");
 
+                    b.Property<int?>("NextPointId")
+                        .HasColumnType("int");
+
                     b.Property<byte>("Order")
                         .HasColumnType("tinyint");
 
@@ -274,6 +280,8 @@ namespace Thesis.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("NextPointId");
 
                     b.HasIndex("RouteId");
 
@@ -530,7 +538,7 @@ namespace Thesis.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Thesis.Domain.Entities.CompletedPoints", b =>
+            modelBuilder.Entity("Thesis.Domain.Entities.CompletedPoint", b =>
                 {
                     b.HasOne("Thesis.Domain.Entities.Point", "Point")
                         .WithMany("CompletedPoints")
@@ -551,11 +559,17 @@ namespace Thesis.Infrastructure.Migrations
 
             modelBuilder.Entity("Thesis.Domain.Entities.Point", b =>
                 {
+                    b.HasOne("Thesis.Domain.Entities.Point", "NextPoint")
+                        .WithMany()
+                        .HasForeignKey("NextPointId");
+
                     b.HasOne("Thesis.Domain.Entities.Route", "Route")
                         .WithMany("Points")
                         .HasForeignKey("RouteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("NextPoint");
 
                     b.Navigation("Route");
                 });

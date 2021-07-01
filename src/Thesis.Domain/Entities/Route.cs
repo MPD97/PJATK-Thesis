@@ -166,6 +166,8 @@ namespace Thesis.Domain.Entities
 
             if (Points.Count > 1)
             {
+                Points[^2].NextPoint = point;
+
                 LengthInMeters += (int)DistanceBetweenPlaces((double)Points[^2].Latitude, (double)Points[^2].Longitude, (double)Points[^1].Latitude, (double)Points[^1].Longitude);
              
                 SetBoundaries(GetBoundaries(TopLeftLatitude, TopLeftLongitude, BottomLeftLatitude, BottomLeftLongitude, latitude, longitude));
@@ -198,6 +200,16 @@ namespace Thesis.Domain.Entities
 
             Update(userId);
         }
+
+        public Run CreateRun(int userId, DateTime startDate)
+        {
+            var run = new Run(userId, this, RunStatus.InProgress, startDate);
+            
+            Runs.Add(run);
+
+            return run;
+        }
+
         private void SetBoundaries(SquareBoundary boundary)
         {
             TopLeftLatitude = boundary.TopLeftLat;
