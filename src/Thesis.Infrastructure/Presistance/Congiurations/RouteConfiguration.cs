@@ -49,6 +49,11 @@ namespace Thesis.Infrastructure.Presistance.Congiurations
                 .WithOne(r => r.Route)
                 .HasForeignKey(r => r.RouteId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(r => r.Medias)
+                .WithOne(r => r.Route)
+                .HasForeignKey(r => r.RouteId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
