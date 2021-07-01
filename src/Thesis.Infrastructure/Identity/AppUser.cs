@@ -8,6 +8,12 @@ namespace Thesis.Infrastructure.Identity
 {
     public class AppUser : IdentityUser<int>
     {
+
+        public string Pseudonym { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+        public DateTime? CloseAccountDate { get; set; }
+
         public virtual IList<Route> CreatedRoutes { get; set; }
         public virtual IList<Route> ModifiedRoutes { get; set; }
         public virtual IList<Run> Runs { get; set; }
@@ -16,8 +22,11 @@ namespace Thesis.Infrastructure.Identity
         {
         }
 
-        public AppUser(string email)
+        public AppUser(string email, string pseudonym, DateTime creationDate)
         {
+            Pseudonym = pseudonym;
+            CreatedDate = creationDate;
+
             UserName = email;
             NormalizedUserName = email.ToUpper();
             Email = email;

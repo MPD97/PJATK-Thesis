@@ -25,4 +25,5 @@ namespace Thesis.Domain.Entities
             Time = time;
         }
     }
+   
 }
