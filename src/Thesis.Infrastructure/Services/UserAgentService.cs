@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Thesis.Application.Common.Interfaces;
 using Thesis.Domain.Entities;
 using UAParser;
@@ -16,7 +17,7 @@ namespace Thesis.Infrastructure.Services
             _repository = repository;
         }
 
-        public async Task Save(int userId, string userAgent)
+        public async Task Save(int userId, DateTime dateTime, string userAgent)
         {
             ClientInfo clientInfo = UAParser.Parse(userAgent);
             var clientUserAgent = clientInfo.UA;
@@ -26,6 +27,8 @@ namespace Thesis.Infrastructure.Services
             var ua = new UserAgent()
             {
                 UserId = userId,
+                Date = dateTime,
+                Raw = userAgent,
 
                 BrowserFamily = clientUserAgent.Family,
                 BrowserMajorVersion = clientUserAgent.Major,

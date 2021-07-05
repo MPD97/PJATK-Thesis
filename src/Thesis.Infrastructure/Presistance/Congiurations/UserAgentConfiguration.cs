@@ -32,6 +32,12 @@ namespace Thesis.Infrastructure.Presistance.Congiurations
 
             builder.Property(ua => ua.DeviceFamily)
                 .HasMaxLength(UserAgent.DEVICE_FAMILY_MAX_LENGTH);
+
+            builder.Property(ua => ua.DeviceBrand)
+                .HasMaxLength(UserAgent.DEVICE_BRAND_MAX_LENGTH);
+
+            builder.Property(ua => ua.DeviceModel)
+                .HasMaxLength(UserAgent.DEVICE_MODEL_MAX_LENGTH);
         }
     }
 }
