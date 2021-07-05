@@ -1,6 +1,6 @@
 ﻿namespace Thesis.Domain.Enums
 {
-    public enum MediaType
+    public enum MediaType : byte
     {
         PhotoPath = 1,
         UrlToYouTubeVideo = 2

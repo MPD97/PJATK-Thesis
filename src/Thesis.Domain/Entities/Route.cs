@@ -118,6 +118,7 @@ namespace Thesis.Domain.Entities
         public virtual IList<Point> Points { get; protected set; } = new List<Point>();
         public virtual IList<Run> Runs { get; protected set; } = new List<Run>();
         public virtual IList<Media> Medias { get; protected set; } = new List<Media>();
+        public virtual IList<Score> Scores { get; protected set; } = new List<Score>();
 
 
         public static readonly int NAME_MAX_LENGTH = 40;

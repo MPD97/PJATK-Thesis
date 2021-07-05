@@ -1,6 +1,6 @@
 ﻿namespace Thesis.Domain.Enums
 {
-    public enum RouteActivityKind
+    public enum RouteActivityKind : byte
     {
         Walking = 1,
         Hikeing = 2, 

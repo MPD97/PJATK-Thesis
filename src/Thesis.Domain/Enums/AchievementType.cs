@@ -1,6 +1,6 @@
 ﻿namespace Thesis.Domain.Enums
 {
-    public enum AchievementType
+    public enum AchievementType : byte 
     {
         FirstPlace,
         SecondPlace,

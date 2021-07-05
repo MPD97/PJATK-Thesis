@@ -1,5 +1,6 @@
 ﻿using System;
 using Thesis.Domain.Commons;
+using Thesis.Domain.Enums;
 using Thesis.Domain.Exceptions;
 
 namespace Thesis.Domain.Entities
@@ -8,6 +9,10 @@ namespace Thesis.Domain.Entities
     {
         public int Id { get; set; }
         public int UserId { get; set; }
+
+        public ScoreType Type { get; set; }
+        public int? RouteId { get; set; }
+        public Route Route { get; set; }
 
         public byte Amount
         {

@@ -55,6 +55,10 @@ namespace Thesis.Infrastructure.Presistance.Congiurations
                 .HasForeignKey(r => r.RouteId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasMany(r => r.Scores)
+                .WithOne(r => r.Route)
+                .HasForeignKey(r => r.RouteId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
