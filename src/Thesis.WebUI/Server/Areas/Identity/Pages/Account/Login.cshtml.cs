@@ -86,6 +86,9 @@ namespace Thesis.WebUI.Server.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    
+                    var userAgent = Request.Headers["User-Agent"];
+
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
