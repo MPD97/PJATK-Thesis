@@ -27,7 +27,7 @@ namespace Thesis.Domain.Entities
         {
             get => browserFamily; set
             {
-                if (value?.Length > RAW_MAX_LENGTH)
+                if (value?.Length > BROWSER_FAMILY_MAX_LENGTH)
                 {
                     throw new DomainLayerException($"Property {nameof(UserAgent)}.{nameof(BrowserFamily)} cannot be bigger than {BROWSER_FAMILY_MAX_LENGTH}.");
                 }
@@ -38,7 +38,7 @@ namespace Thesis.Domain.Entities
         {
             get => browserMajorVersion; set
             {
-                if (value?.Length > RAW_MAX_LENGTH)
+                if (value?.Length > BROWSER_MAJOR_VERSION_MAX_LENGTH)
                 {
                     throw new DomainLayerException($"Property {nameof(UserAgent)}.{nameof(BrowserMajorVersion)} cannot be bigger than {BROWSER_MAJOR_VERSION_MAX_LENGTH}.");
                 }
@@ -49,7 +49,7 @@ namespace Thesis.Domain.Entities
         {
             get => browserMinorVersion; set
             {
-                if (value?.Length > RAW_MAX_LENGTH)
+                if (value?.Length > BROWSER_MINOR_VERSION_MAX_LENGTH)
                 {
                     throw new DomainLayerException($"Property {nameof(UserAgent)}.{nameof(BrowserMinorVersion)} cannot be bigger than {BROWSER_MINOR_VERSION_MAX_LENGTH}.");
                 }
@@ -61,7 +61,7 @@ namespace Thesis.Domain.Entities
         {
             get => oSFamily; set
             {
-                if (value?.Length > RAW_MAX_LENGTH)
+                if (value?.Length > OS_FAMILY_MAX_LENGTH)
                 {
                     throw new DomainLayerException($"Property {nameof(UserAgent)}.{nameof(OSFamily)} cannot be bigger than {OS_FAMILY_MAX_LENGTH}.");
                 }
@@ -72,7 +72,7 @@ namespace Thesis.Domain.Entities
         {
             get => oSMajorVersion; set
             {
-                if (value?.Length > RAW_MAX_LENGTH)
+                if (value?.Length > OS_MAJOR_VERSION_MAX_LENGTH)
                 {
                     throw new DomainLayerException($"Property {nameof(UserAgent)}.{nameof(OSMajorVersion)} cannot be bigger than {OS_MAJOR_VERSION_MAX_LENGTH}.");
                 }
@@ -83,7 +83,7 @@ namespace Thesis.Domain.Entities
         {
             get => oSMinorVersion; set
             {
-                if (value?.Length > RAW_MAX_LENGTH)
+                if (value?.Length > OS_MINOR_VERSION_MAX_LENGTH)
                 {
                     throw new DomainLayerException($"Property {nameof(UserAgent)}.{nameof(OSMinorVersion)} cannot be bigger than {OS_MINOR_VERSION_MAX_LENGTH}.");
                 }
@@ -95,7 +95,7 @@ namespace Thesis.Domain.Entities
         {
             get => deviceFamily; set
             {
-                if (value?.Length > RAW_MAX_LENGTH)
+                if (value?.Length > DEVICE_FAMILY_MAX_LENGTH)
                 {
                     throw new DomainLayerException($"Property {nameof(UserAgent)}.{nameof(DeviceFamily)} cannot be bigger than {DEVICE_FAMILY_MAX_LENGTH}.");
                 }
@@ -106,7 +106,7 @@ namespace Thesis.Domain.Entities
         {
             get => deviceBrand; set
             {
-                if (value?.Length > RAW_MAX_LENGTH)
+                if (value?.Length > DEVICE_BRAND_MAX_LENGTH)
                 {
                     throw new DomainLayerException($"Property {nameof(UserAgent)}.{nameof(DeviceBrand)} cannot be bigger than {DEVICE_BRAND_MAX_LENGTH}.");
                 }
@@ -118,7 +118,7 @@ namespace Thesis.Domain.Entities
         {
             get => deviceModel; set
             {
-                if (value?.Length > RAW_MAX_LENGTH)
+                if (value?.Length > DEVICE_MODEL_MAX_LENGTH)
                 {
                     throw new DomainLayerException($"Property {nameof(UserAgent)}.{nameof(DeviceModel)} cannot be bigger than {DEVICE_MODEL_MAX_LENGTH}.");
                 }

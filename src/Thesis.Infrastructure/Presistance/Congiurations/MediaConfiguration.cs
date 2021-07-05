@@ -9,7 +9,7 @@ namespace Thesis.Infrastructure.Presistance.Congiurations
         public void Configure(EntityTypeBuilder<Media> builder)
         {
             builder.Property(m => m.Value)
-                .HasMaxLength(Media.Value_MAX_LENGTH);
+                .HasMaxLength(Media.VALUE_MAX_LENGTH);
         }
     }
 }
