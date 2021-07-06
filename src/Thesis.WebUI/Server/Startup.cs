@@ -38,6 +38,8 @@ namespace Thesis.WebUI.Server
 
             services.AddScoped<IUserAgentService, UserAgentService>();
 
+            services.AddScoped<IScoreService, ScoreService>();
+
             var cs = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<AppDbContext>(options =>

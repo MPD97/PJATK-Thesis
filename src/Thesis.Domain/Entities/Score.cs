@@ -38,6 +38,21 @@ namespace Thesis.Domain.Entities
                 description = value;
             }
         }
+
+        public Score()
+        {
+        }
+
+        public Score(int userId, ScoreType type, Route route, byte amount, DateTime date, string description)
+        {
+            UserId = userId;
+            Type = type;
+            Route = route;
+            Amount = amount;
+            Date = date;
+            Description = description;
+        }
+
         public static readonly int AMOUNT_MIN_VALUE = 1;
         public static readonly int DESCRIPTION_MAX_LENGTH = 80;
 
