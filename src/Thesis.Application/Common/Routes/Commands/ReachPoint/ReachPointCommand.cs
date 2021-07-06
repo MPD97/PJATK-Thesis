@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,13 +42,19 @@ namespace Thesis.Application.Common.Routes.Commands.ReachPoint
         private readonly IRunService _runService;
         private readonly IPointService _pointService;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IScoreService _scoreService;
+        private readonly IDateTime _dateTime;
+        private readonly IRouteService _routeService;
 
-        public ReachPointCommandHandler(IMapper mapper, IRunService runService, IPointService pointService, ICurrentUserService currentUserService)
+        public ReachPointCommandHandler(IMapper mapper, IRunService runService, IPointService pointService, ICurrentUserService currentUserService, IScoreService scoreService, IDateTime dateTime, IRouteService routeService)
         {
             _mapper = mapper;
             _runService = runService;
             _pointService = pointService;
             _currentUserService = currentUserService;
+            _scoreService = scoreService;
+            _dateTime = dateTime;
+            _routeService = routeService;
         }
 
         public async Task<RunDto> Handle(ReachPointCommand request, CancellationToken cancellationToken)
@@ -67,6 +74,8 @@ namespace Thesis.Application.Common.Routes.Commands.ReachPoint
             {
                 completedPoint = await _runService.CompletePoint(activeRun, pointToComplete);
                 await _runService.CompleteRun(activeRun);
+
+                await _scoreService.IncrementScoreRouteCompleted(userId, _dateTime.Now, pointToComplete.Route);
 
                 await _runService.SaveChangesAsync();
             }

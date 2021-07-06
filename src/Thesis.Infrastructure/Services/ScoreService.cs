@@ -17,9 +17,19 @@ namespace Thesis.Infrastructure.Services
             _repository = repository;
         }
 
+        public async Task<int> GetScore(int userId)
+        {
+            var result = _repository
+                .GetAll()
+                .Where(s => s.UserId == userId)
+                .Sum(s => s.Amount);
+
+            return result;
+        }
+
         public async Task IncrementScoreRouteAdded(int userId, DateTime date, Route route)
         {
-            var score = new Score(userId, ScoreType.RouteAdded, route, 5, date, $"Dodanie nowej trasy: {route.Name}");
+            var score = new Score(userId, ScoreType.RouteAdded, route, 5, date, $"Dodanie nowej trasy \"{route.Name}\"");
 
             await _repository.AddAsync(score);
             await _repository.SaveChangesAsync();
@@ -46,7 +56,7 @@ namespace Thesis.Infrastructure.Services
             if (score is not null)
                 return;
 
-            score = new Score(userId, scoreType, route, points, date, $"Dodanie komentarza pod trasą: {route.Name}{withPhoto}");
+            score = new Score(userId, scoreType, route, points, date, $"Dodanie komentarza{withPhoto} pod trasą \"{route.Name}\"");
 
             await _repository.AddAsync(score);
             await _repository.SaveChangesAsync();
@@ -54,31 +64,31 @@ namespace Thesis.Infrastructure.Services
 
         public async Task IncrementScoreRouteCompleted(int userId, DateTime date, Route route)
         {
-            var score = new Score(userId, ScoreType.RouteCompleted, route, 5, date, $"Ukończenie trasy: {route.Name}");
+            var score = new Score(userId, ScoreType.RouteCompleted, route, 5, date, $"Ukończenie trasy \"{route.Name}\"");
 
             await _repository.AddAsync(score);
             await _repository.SaveChangesAsync();
         }
 
-        public async Task IncrementScoreRouteCompletedEndOfMonth(int userId, DateTime date, DateTime forDate, Route route, RoutePlace place)
+        public async Task IncrementScoreRouteCompletedEndOfMonth(int userId, DateTime date, DateTime forDate, Route route, RouteScorePlace place)
         {
             var scoreType = ScoreType.TopTen;
             byte points = 10;
             switch (place)
             {
-                case RoutePlace.First:
+                case RouteScorePlace.First:
                     scoreType = ScoreType.TopOne;
                     points = 35;
                     break;
-                case RoutePlace.Second:
+                case RouteScorePlace.Second:
                     scoreType = ScoreType.TopTwo;
                     points = 25;
                     break;
-                case RoutePlace.Third:
+                case RouteScorePlace.Third:
                     scoreType = ScoreType.TopThree;
                     points = 15;
                     break;
-                case RoutePlace.TopTen:
+                case RouteScorePlace.TopTen:
                     scoreType = ScoreType.TopTen;
                     points = 10;
                     break;
@@ -86,7 +96,7 @@ namespace Thesis.Infrastructure.Services
                     throw new NotImplementedException($"Unknown {nameof(place)}");
             }
 
-            var score = new Score(userId, scoreType, route, points, date, $"Za ukończenie trasy: {route.Name} będąc top {(int)place} w miesiącu {forDate.ToString("mmmm")} {forDate.ToString("yyyy")}");
+            var score = new Score(userId, scoreType, route, points, date, $"Za ukończenie trasy \"{route.Name}\" będąc top {(int)place} w miesiącu {forDate.ToString("mmmm")} {forDate.ToString("yyyy")}");
             
             await _repository.AddAsync(score);
             await _repository.SaveChangesAsync();

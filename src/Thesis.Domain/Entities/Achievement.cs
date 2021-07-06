@@ -9,8 +9,6 @@ namespace Thesis.Domain.Entities
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public int RouteId { get; set; }
-
         public AchievementType Type { get; set; }
         public DateTime Date { get; set; }
         public string Description
@@ -28,6 +26,19 @@ namespace Thesis.Domain.Entities
         public static readonly int DESCRIPTION_MAX_VALUE = 500;
 
         private string description;
+
+        public Achievement()
+        {
+
+        }
+
+        public Achievement(int userId, AchievementType type, DateTime date, string description)
+        {
+            UserId = userId;
+            Type = type;
+            Date = date;
+            Description = description;
+        }
     }
-    
+
 }

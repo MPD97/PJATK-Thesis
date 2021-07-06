@@ -1,6 +1,6 @@
 ﻿namespace Thesis.Domain.Enums
 {
-    public enum RoutePlace : byte
+    public enum RouteScorePlace : byte
     {
         First = 1,
         Second = 2,

@@ -40,6 +40,8 @@ namespace Thesis.WebUI.Server
 
             services.AddScoped<IScoreService, ScoreService>();
 
+            services.AddScoped<IAchevementService, AchevementService>();
+
             var cs = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<AppDbContext>(options =>
