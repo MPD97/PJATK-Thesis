@@ -34,17 +34,28 @@ namespace Thesis.Application.Common.Models.GeoJson.Route
             PointId = pointId;
         }
     }
-    public class RoutePointPropertiesWithRouteId : RoutePointProperties
+    public class RoutePointPropertiesFirstPoint : RoutePointProperties
     {
         public int RouteId { get; set; }
 
-        public RoutePointPropertiesWithRouteId()
+        public string RouteName { get; set; }
+        public string RouteDescription { get; set; }
+        public int RouteLength { get; set; }
+        public RouteDifficulty RouteDifficulty { get; set; }
+
+        public RoutePointPropertiesFirstPoint()
         {
 
         }
-        public RoutePointPropertiesWithRouteId(RoutePointType type, int order, int pointId, int routeId) : base(type, order, pointId)
+
+
+        public RoutePointPropertiesFirstPoint(RoutePointType type, int order, int pointId, int routeId, string routeName, string routeDescription, int routeLength, RouteDifficulty routeDifficulty) : base(type, order, pointId)
         {
             RouteId = routeId;
+            RouteName = routeName;
+            RouteDescription = routeDescription;
+            RouteLength = routeLength;
+            RouteDifficulty = routeDifficulty;
         }
     }
     public enum RoutePointType

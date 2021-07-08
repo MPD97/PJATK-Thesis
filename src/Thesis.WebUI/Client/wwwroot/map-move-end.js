@@ -1,4 +1,5 @@
 ﻿const colors = ["#00DC30", "#2D35FF", "#DC0D00", "#000000"];
+const difficulty = ["green", "blue", "red", "black"];
 const geolocationOptions = {
     enableHighAccuracy: true,
     timeout: 5000,
@@ -18,11 +19,11 @@ let routelayers = [];
 let runLayers = [];
 let runCompletedPointLayers = [];
 
+let timerInterval = undefined;
+
 window.mapHelper = {
     init: dotnetHelper => {
         dotnetHelper = dotnetHelper;
-
-
 
         map.on('moveend', (eventData) => {
             let canvas = map.getCanvas()
@@ -124,7 +125,10 @@ window.mapHelper = {
             console.log(e.features[0]);
 
             var currentCoordinates = e.features[0].geometry.coordinates.slice();
-            var routeName = e.features[0].properties.title;
+            var routeName = e.features[0].properties.routeName;
+            var routeDescription = e.features[0].properties.routeDescription;
+            var routeLength = e.features[0].properties.routeLength;
+            var routeDifficulty = e.features[0].properties.routeDifficulty;
             var routeId = e.features[0].properties.routeId;
             var routeSourceId = e.features[0].source.toString();
 
@@ -139,9 +143,13 @@ window.mapHelper = {
             var headerWrapper = $("<div />");
             headerWrapper.addClass("d-flex flex-row justify-content-center");
 
+            var level = $("<img />");
+            level.addClass("img-difficulty")
+            level.attr("src", "/img/route-difficulty-" + difficulty[routeDifficulty - 1] + ".png")
+
             var title = $("<div />").text(routeName);
-            title.addClass("m-2 font-weight-bold");
-            headerWrapper.append(title);
+            title.addClass("m-2 font-weight-bold route-title");
+            headerWrapper.append(level, title);
 
             //Body
             var bodyContainer = $("<div />");
@@ -152,12 +160,12 @@ window.mapHelper = {
             info.prop("id", "info-" + routeId);
 
             var distance = $("<div />");
-            distance.addClass("m-2");
+            distance.addClass("");
             distance.prop("id", "distance-" + routeId);
             distance.text("Odległość: obliczanie...");
 
             var accuracy = $("<div />");
-            accuracy.addClass("m-2");
+            accuracy.addClass("");
             accuracy.prop("id", "accuracy-" + routeId);
             accuracy.text("Dokładność: obliczanie...");
 
@@ -328,11 +336,16 @@ window.mapHelper = {
                         setTimeout(function () {
                             alertify.message('1', 1);
 
+                            clearTimer();
+
                             createRun(dotnetHelper, routeId, routeSourceId);
 
 
                             setTimeout(function () {
-                                alertify.success('Start!', 2);
+                                alertify.success('Czas start! Biegnij do następnego punktu', 2);
+
+                                createTimer();
+
                             }, 1000);
                         }, 1000);
                     }, 1000);
@@ -345,6 +358,8 @@ window.mapHelper = {
 };
 
 
+
+const zeroPad = (num, places) => String(num).padStart(places, '0')
 
 function createRun(dotnetHelper, routeId, routeSourceId) {
     dotnetHelper.invokeMethodAsync('CreateRun', parseInt(routeId), current_latitude, current_longitude, current_accuracy)
@@ -362,10 +377,12 @@ function createRun(dotnetHelper, routeId, routeSourceId) {
             } else {
                 if (json.result.status == 2) {
                     console.log('Run completed');
-                    alertify.success('Run completed');
+                    alertify.success('Gratulacje, ukończyłeś trasę!');
 
+                    clearTimer();
                     removeRunLayers();
                     showAllRoutes();
+
                     return false;
                 }
 
@@ -378,7 +395,7 @@ function createRun(dotnetHelper, routeId, routeSourceId) {
                 let nextPointRadius = nextPoint.radius;
 
                 let geolocationRunHandler = window.navigator.geolocation.watchPosition(
-                    function(position) {
+                    function (position) {
                         let crd = position.coords;
 
                         current_accuracy = crd.accuracy;
@@ -427,8 +444,9 @@ function createRun(dotnetHelper, routeId, routeSourceId) {
                                     else {
                                         if (reachPointResult.result.status == 2) {
                                             console.log('Run completed');
-                                            alertify.success('Run completed');
+                                            alertify.success('Gratulacje, ukończyłeś trasę!');
 
+                                            clearTimer();
                                             removeRunLayers();
                                             showAllRoutes();
 
@@ -436,6 +454,7 @@ function createRun(dotnetHelper, routeId, routeSourceId) {
                                             return false;
                                         }
 
+                                        alertify.success('Punkt zaliczony. Biegnij dalej!');
 
                                         completePoint(reachPointResult, routeId, routeSourceId);
 
@@ -459,6 +478,40 @@ function createRun(dotnetHelper, routeId, routeSourceId) {
         });
 }
 
+function createTimer() {
+    let timerWrapper = $("<div />");
+    timerWrapper.addClass("timer-wrapper");
+
+    let timer = $("<img />");
+    timer.addClass("timer");
+    timer.attr("src", "/img/timer.png");
+
+    let timerValue = $("<p />").text("00:00");
+    timerValue.addClass("timer-value");
+
+    timerWrapper.append(timer, timerValue);
+
+    let container = $(".mapboxgl-ctrl-top-left");
+    container.append(timerWrapper);
+
+    var minutes = 0
+    var sec = 0;
+    timerInterval = setInterval(function () {
+        $('.timer-value').text(zeroPad(minutes, 2) + ":" + zeroPad(sec, 2));
+        sec++;
+        if (sec >= 60) {
+            minutes++;
+            sec = 0;
+        }
+    }, 1000);
+}
+
+function clearTimer() {
+    if (timerInterval !== undefined) {
+        clearInterval(timerInterval);
+        $(".timer-wrapper").remove();
+    }
+}
 function hideAllRoutes() {
     $.each(routelayers, function (index, layerId) {
         map.setLayoutProperty(layerId, 'visibility', 'none');
