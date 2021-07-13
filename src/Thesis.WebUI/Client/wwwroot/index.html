@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8" />
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />-->
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-
     <title>Thesis.WebUI</title>
     <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
@@ -13,15 +10,30 @@
     <link href="Thesis.WebUI.Client.styles.css" rel="stylesheet" />
     <link href="manifest.json" rel="manifest" />
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css" rel="stylesheet">
+    <script src="alertify.js"></script>
     <script src="jquery-3.6.0.min.js"></script>
-
-    <script src="http://localhost:8080/mapbox-gl.js"></script>
-    <script src="http://localhost:8080/mapbox.js"></script>
-    <script src="http://localhost:8080/leaflet-hash.js"></script>
-
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
+    <script src="turf-5.min.js"></script>
+    <link href="css/alertify/themes/default.css" rel="stylesheet" />
+    <link href="css/alertify/alertify.css" rel="stylesheet" />
     <script src="create-map.js"></script>
     <script src="map-move-end.js"></script>
     <script src="helpers.js"></script>
+    <style>
+        .new-version-toast {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            background-color: darkturquoise;
+            padding: 10px;
+            margin: 10px 30px;
+            box-shadow: 9px 5px 5px grey;
+            position: absolute;
+            bottom: 0px;
+            width: 400px;
+        }
+    </style>
 </head>
 
 <body>
@@ -34,6 +46,34 @@
     </div>
     <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
+    <script>
+        const bc = new BroadcastChannel('blazor-channel');
+        bc.onmessage = function (message) {
+            if (message && message.data == "new-version-found") {
+                console.info("A new version was found");
+
+                let label = document.createElement("label");
+                label.textContent = "A new version was found";
+
+                let updateButton = document.createElement("button");
+                updateButton.textContent = "Reload now";
+                updateButton.addEventListener('click', () => {
+                    console.log("Updating to new version");
+                    bc.postMessage("skip-waiting");
+                });
+
+                let newVersionToast = document.createElement("div");
+                newVersionToast.className = "new-version-toast";
+                newVersionToast.appendChild(label);
+                newVersionToast.appendChild(updateButton);
+
+                document.getElementsByTagName("body")[0].appendChild(newVersionToast);
+            } else if (message && message.data == "reload-page") {
+                console.info("Reloading page");
+                window.location.href = window.location.href
+            }
+        }
+    </script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
 </body>
 

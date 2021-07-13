@@ -38,6 +38,7 @@ namespace Thesis.Domain.Entities
         }
         public string Description { get; protected set; }
         public RouteDifficulty Difficulty { get; protected set; }
+        public RouteActivityKind ActivityKind { get; protected set; }
         public int LengthInMeters
         {
             get => lengthInMeters; set
@@ -116,6 +117,9 @@ namespace Thesis.Domain.Entities
 
         public virtual IList<Point> Points { get; protected set; } = new List<Point>();
         public virtual IList<Run> Runs { get; protected set; } = new List<Run>();
+        public virtual IList<Media> Medias { get; protected set; } = new List<Media>();
+        public virtual IList<Score> Scores { get; protected set; } = new List<Score>();
+
 
         public static readonly int NAME_MAX_LENGTH = 40;
         public static readonly int NAME_MIN_LENGTH = 4;
@@ -142,11 +146,12 @@ namespace Thesis.Domain.Entities
 
         }
 
-        public Route(string name, string description, RouteDifficulty difficulty, int userId)
+        public Route(string name, string description, RouteDifficulty difficulty, RouteActivityKind activityKind, int userId)
         {
             Name = name;
             Description = description;
             Difficulty = difficulty;
+            ActivityKind = activityKind;
 
             Create(userId);
         }
@@ -166,6 +171,8 @@ namespace Thesis.Domain.Entities
 
             if (Points.Count > 1)
             {
+                Points[^2].NextPoint = point;
+
                 LengthInMeters += (int)DistanceBetweenPlaces((double)Points[^2].Latitude, (double)Points[^2].Longitude, (double)Points[^1].Latitude, (double)Points[^1].Longitude);
              
                 SetBoundaries(GetBoundaries(TopLeftLatitude, TopLeftLongitude, BottomLeftLatitude, BottomLeftLongitude, latitude, longitude));
@@ -198,6 +205,16 @@ namespace Thesis.Domain.Entities
 
             Update(userId);
         }
+
+        public Run CreateRun(int userId, DateTime startDate)
+        {
+            var run = new Run(userId, this, RunStatus.InProgress, startDate);
+            
+            Runs.Add(run);
+
+            return run;
+        }
+
         private void SetBoundaries(SquareBoundary boundary)
         {
             TopLeftLatitude = boundary.TopLeftLat;

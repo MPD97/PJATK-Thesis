@@ -5,9 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Thesis.Application.Common.Extensions;
-using Thesis.Application.Common.Models.GeoJson.Base;
-using Thesis.Application.Common.Models.GeoJson.Line;
 using Thesis.Application.Common.Models.GeoJson.Route;
+using Thesis.Application.Common.Routes.Queries.GetRoute;
 using Thesis.Application.Common.Routes.Queries.GetRoutes;
 using Thesis.WebUI.Server.Attributes;
 
@@ -35,6 +34,21 @@ namespace Thesis.WebUI.Server.Controllers
                 .ToArray();
 
             return Ok(models);
+        }
+
+        [HttpGet("{routeId:int}"), HttpHeader("Format", "GeoJson")]
+        [Produces("application/json")]
+        public async Task<ActionResult<IEnumerable<GJRouteVM>>> GetGeoJson([FromRoute] GetRouteQuery query, CancellationToken token)
+        {
+            var result = await Mediator.Send(query, token);
+
+            if (result.Route is null)
+                return NotFound("Route not found");
+
+            var model = result.Route
+                .ToGeoJsonVM();
+
+            return Ok(model);
         }
     }
 }

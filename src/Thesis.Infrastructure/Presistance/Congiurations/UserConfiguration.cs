@@ -13,6 +13,12 @@ namespace Thesis.Infrastructure.Presistance.Congiurations
     {
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
+            builder.Property(u => u.Pseudonym)
+                .HasMaxLength(AppUser.PSEUDONYM_MAX_LENGTH);
+
+            builder.HasIndex(u => u.Pseudonym)
+                .IsUnique();
+
             builder.HasMany(u => u.CreatedRoutes)
                 .WithOne()
                 .HasForeignKey(r => r.CreatedBy)
@@ -27,7 +33,21 @@ namespace Thesis.Infrastructure.Presistance.Congiurations
                 .WithOne()
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u => u.UserAgents)
+                .WithOne()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u => u.Achievements)
+                .WithOne()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u => u.Scores)
+                .WithOne()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
-
 }

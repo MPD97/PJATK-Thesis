@@ -11,4 +11,5 @@ namespace Thesis.Application.Common.Routes.Queries.GetRoutes
             Routes = routes;
         }
     }
+ 
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Thesis.Domain.Enums
 {
-    public enum RouteDifficulty
+    public enum RouteDifficulty : byte
     {
         Green = 1,
         Blue = 2,

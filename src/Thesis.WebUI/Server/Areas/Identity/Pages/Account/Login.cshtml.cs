@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Thesis.Infrastructure.Identity;
+using Thesis.Application.Common.Interfaces;
 
 namespace Thesis.WebUI.Server.Areas.Identity.Pages.Account
 {
@@ -21,14 +22,19 @@ namespace Thesis.WebUI.Server.Areas.Identity.Pages.Account
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
-
-        public LoginModel(SignInManager<AppUser> signInManager, 
+        private readonly IUserAgentService _userAgentService;
+        private readonly ICurrentUserService _currentUserService;
+        private readonly IDateTime _dateTime;
+        public LoginModel(SignInManager<AppUser> signInManager,
             ILogger<LoginModel> logger,
-            UserManager<AppUser> userManager)
+            UserManager<AppUser> userManager, IUserAgentService userAgentService, ICurrentUserService currentUserService, IDateTime dateTime)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _userAgentService = userAgentService;
+            _currentUserService = currentUserService;
+            _dateTime = dateTime;
         }
 
         [BindProperty]
@@ -82,12 +88,17 @@ namespace Thesis.WebUI.Server.Areas.Identity.Pages.Account
         
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    
+                    var userAgent = Request.Headers["User-Agent"];
+
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                    await _userAgentService.Save(user.Id, _dateTime.Now, userAgent);
+
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
