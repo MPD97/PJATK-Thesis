@@ -37,7 +37,7 @@ namespace Thesis.Application.Common.Extensions
                 int idx = i + 1;
                 if (i == 0)
                 {
-                    routeData.Properties = new RoutePointPropertiesWithRouteId(RoutePointType.Start, idx, sortedPoints[i].PointId, route.Id);
+                    routeData.Properties = new RoutePointPropertiesFirstPoint(RoutePointType.Start, idx, sortedPoints[i].PointId, route.Id, route.Name, route.Description, route.LengthInMeters, route.Difficulty);
                 }
                 else if (i != sortedPoints.Length - 1)
                 {

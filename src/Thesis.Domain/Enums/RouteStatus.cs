@@ -1,6 +1,6 @@
 ﻿namespace Thesis.Domain.Enums
 {
-    public enum RouteStatus
+    public enum RouteStatus : byte
     {
         New,
         Rejected,

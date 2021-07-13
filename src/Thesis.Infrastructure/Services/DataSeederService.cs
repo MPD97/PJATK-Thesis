@@ -17,14 +17,19 @@ namespace Thesis.Infrastructure.Services
     {
         private readonly IRepository<Route> _routeRepository;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IDateTime _dateTime;
 
-        private AppUser _testUser = new AppUser("test@test.pl");
-        private AppUser _testUser2 = new AppUser("test2@test.pl");
+        private AppUser _testUser;
+        private AppUser _testUser2;
 
-        public DataSeederService(IRepository<Route> routeRepository, UserManager<AppUser> userManager)
+        public DataSeederService(IRepository<Route> routeRepository, UserManager<AppUser> userManager, IDateTime dateTime)
         {
             _routeRepository = routeRepository;
             _userManager = userManager;
+            _dateTime = dateTime;
+
+            _testUser = new AppUser("test@test.pl", "Testowik1", dateTime.Now);
+            _testUser2 = new AppUser("test2@test.pl", "Testowik2", dateTime.Now);
         }
 
         public async Task CreateTestRoute()
@@ -37,7 +42,7 @@ namespace Thesis.Infrastructure.Services
 
             if (await _routeRepository.FindBy(r => r.Name == "Trasa testowa").FirstOrDefaultAsync() == null)
             {
-                var route = new Route("Trasa testowa", "Opis trasy testowej", RouteDifficulty.Green, existingUser.Id);
+                var route = new Route("Trasa testowa", "Opis trasy testowej", RouteDifficulty.Green, RouteActivityKind.Walking, existingUser.Id);
                 route.AddPoint(52.183145708512654M, 21.432822680367927M, 10);
                 route.AddPoint(52.183057202090545M, 21.436503590733746M, 10);
                 route.AddPoint(52.182813808521466M, 21.43924622982985M, 10);
@@ -53,7 +58,7 @@ namespace Thesis.Infrastructure.Services
 
             if (await _routeRepository.FindBy(r => r.Name == "Trasa testowa 2").FirstOrDefaultAsync() == null)
             {
-                var route = new Route("Trasa testowa 2", "Opis trasy testowej", RouteDifficulty.Blue, existingUser.Id);
+                var route = new Route("Trasa testowa 2", "Opis trasy testowej", RouteDifficulty.Blue, RouteActivityKind.Running, existingUser.Id);
                 route.AddPoint(52.17938994006697M, 21.426149905087946M, 10);
                 route.AddPoint(52.178574157889344M, 21.428166926121726M, 10);
                 route.AddPoint(52.17782415139548M, 21.428960859932896M, 10);

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Thesis.Infrastructure.Presistance;
 
 namespace Thesis.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210705141800_User_Agent_Details")]
+    partial class User_Agent_Details
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,8 +243,11 @@ namespace Thesis.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<byte>("Type")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("RouteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -286,11 +291,8 @@ namespace Thesis.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte>("MediaType")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("MediaType")
+                        .HasColumnType("int");
 
                     b.Property<int>("RouteId")
                         .HasColumnType("int");
@@ -349,8 +351,8 @@ namespace Thesis.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<byte>("ActivityKind")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("ActivityKind")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("BottomLeftLatitude")
                         .HasPrecision(11, 8)
@@ -370,8 +372,8 @@ namespace Thesis.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<byte>("Difficulty")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("Difficulty")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
@@ -387,8 +389,8 @@ namespace Thesis.Infrastructure.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
-                    b.Property<byte>("Status")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TopLeftLatitude")
                         .HasPrecision(11, 8)
@@ -433,8 +435,8 @@ namespace Thesis.Infrastructure.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte>("Status")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -446,41 +448,6 @@ namespace Thesis.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Run");
-                });
-
-            modelBuilder.Entity("Thesis.Domain.Entities.Score", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<byte>("Amount")
-                        .HasColumnType("tinyint");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(80)
-                        .HasColumnType("nvarchar(80)");
-
-                    b.Property<int?>("RouteId")
-                        .HasColumnType("int");
-
-                    b.Property<short>("Type")
-                        .HasColumnType("smallint");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RouteId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Score");
                 });
 
             modelBuilder.Entity("Thesis.Domain.Entities.UserAgent", b =>
@@ -795,22 +762,6 @@ namespace Thesis.Infrastructure.Migrations
                     b.Navigation("Route");
                 });
 
-            modelBuilder.Entity("Thesis.Domain.Entities.Score", b =>
-                {
-                    b.HasOne("Thesis.Domain.Entities.Route", "Route")
-                        .WithMany("Scores")
-                        .HasForeignKey("RouteId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Thesis.Infrastructure.Identity.AppUser", null)
-                        .WithMany("Scores")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Route");
-                });
-
             modelBuilder.Entity("Thesis.Domain.Entities.UserAgent", b =>
                 {
                     b.HasOne("Thesis.Infrastructure.Identity.AppUser", null)
@@ -832,8 +783,6 @@ namespace Thesis.Infrastructure.Migrations
                     b.Navigation("Points");
 
                     b.Navigation("Runs");
-
-                    b.Navigation("Scores");
                 });
 
             modelBuilder.Entity("Thesis.Domain.Entities.Run", b =>
@@ -850,8 +799,6 @@ namespace Thesis.Infrastructure.Migrations
                     b.Navigation("ModifiedRoutes");
 
                     b.Navigation("Runs");
-
-                    b.Navigation("Scores");
 
                     b.Navigation("UserAgents");
                 });

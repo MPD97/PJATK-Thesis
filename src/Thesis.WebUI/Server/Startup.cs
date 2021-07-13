@@ -13,6 +13,7 @@ using Thesis.Infrastructure.Identity;
 using Thesis.Infrastructure.Presistance;
 using Thesis.WebUI.Server.Services;
 using Thesis.Application.Common.Extensions;
+using Thesis.Infrastructure.Services;
 
 namespace Thesis.WebUI.Server
 {
@@ -34,6 +35,12 @@ namespace Thesis.WebUI.Server
             services.AddConfigurations(Configuration);
 
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
+            services.AddScoped<IUserAgentService, UserAgentService>();
+
+            services.AddScoped<IScoreService, ScoreService>();
+
+            services.AddScoped<IAchevementService, AchevementService>();
 
             var cs = Configuration.GetConnectionString("DefaultConnection");
 
